@@ -5,11 +5,22 @@
   "main": "index.js",
   "scripts": {
     "test": "node node_modules/mocha/bin/mocha --config .mocharc.json \"test/**/*_spec.js\" --exit",
-    "test:watch": "npm run test -- --watch"
+    "test:watch": "npm run test -- --watch",
+    "lint": "node node_modules/eslint-watch/bin/esw -c .eslintrc.json nodes",
+    "lint:watch": "node node_modules/eslint-watch/bin/esw -c .eslintrc.json nodes -w"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/paulroth3d/node-red-contrib-sf-platform-events.git"
+  },
+  "node-red": {
+    "nodes": {
+      "sf-platform-event-pub": "nodes/platformEvents/sf-platform-event-pub.js"
+    }
+  },
+  "old-node-red": {
+    "sf-platform-event-sub": "nodes/platformEvents/sf-platform-event-sub.js",
+    "sf-platform-event-config": "nodes/connection/sf-connection-emitter.js"
   },
   "keywords": [
     "salesforce",
@@ -22,6 +33,9 @@
   },
   "homepage": "https://github.com/paulroth3d/node-red-contrib-sf-platform-events#readme",
   "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-plugin-html": "^5.0.3",
+    "eslint-watch": "^5.1.2",
     "mocha": "6.1.4",
     "node-red": "0.20.5",
     "node-red-node-test-helper": "0.2.2"
