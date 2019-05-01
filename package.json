@@ -6,8 +6,8 @@
   "scripts": {
     "test": "node node_modules/mocha/bin/mocha --config .mocharc.json \"test/**/*_spec.js\" --exit",
     "test:watch": "npm run test -- --watch",
-    "lint": "node node_modules/eslint-watch/bin/esw -c .eslintrc.json nodes",
-    "lint:watch": "node node_modules/eslint-watch/bin/esw -c .eslintrc.json nodes -w"
+    "lint": "node node_modules/eslint-watch/bin/esw -c .eslintrc.json nodes test",
+    "lint:watch": "node node_modules/eslint-watch/bin/esw -c .eslintrc.json nodes test -w"
   },
   "repository": {
     "type": "git",
@@ -15,11 +15,11 @@
   },
   "node-red": {
     "nodes": {
+      "sf-platform-event-sub": "nodes/platformEvents/sf-platform-event-sub.js",
       "sf-platform-event-pub": "nodes/platformEvents/sf-platform-event-pub.js"
     }
   },
   "old-node-red": {
-    "sf-platform-event-sub": "nodes/platformEvents/sf-platform-event-sub.js",
     "sf-platform-event-config": "nodes/connection/sf-connection-emitter.js"
   },
   "keywords": [

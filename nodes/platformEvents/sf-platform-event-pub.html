@@ -1,0 +1,39 @@
+<script type="text/x-red" data-template-name="sf-platform-event-pub">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+</script>
+<script type="text/x-red" data-help-name="sf-platform-event-pub">
+    <div>
+        <a class="node-info-header expanded" href="#"><i class="fa fa-angle-right"></i>Inputs</a>
+        <dl class="message-properties">
+        <dt>
+            Name<span class="property-type">node</span>
+        </dt>
+        <dd>
+            Label of the node shown in the editor.
+        </dd>
+        </dl>
+    </div>
+</script>
+<script type="text/javascript">
+    RED.nodes.registerType('sf-platform-event-pub', {
+        category: 'Salesforce',
+        color: '#C0DEED',
+        defaults: {
+            name: { value: '' }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "salesforce.png",
+        align: "left",
+        paletteLabel: "Platform Event Publisher",
+        label: function(){
+            return this.name || "Platform Event Publisher";
+        },
+        labelStyle: function(){
+            return this.name?'':'node_label_italic';
+        }
+    });
+</script>

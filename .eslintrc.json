@@ -13,6 +13,10 @@
 
 	"rules": {
 		"no-unused-vars" : ["warn", {"vars" : "all", "args": "none" }]
-	}
+	},
+
+	"plugins": [
+		"html"
+	]
 }
 
