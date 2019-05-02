@@ -10,6 +10,9 @@ module.exports = function(RED) {
   function SalesforcePlatformEventPublisher(n){
     RED.nodes.createNode(this, n);
 
+    //-- get variables
+    this.eventObject = n.eventobject;
+
     /**
      * Set the status on the node
      * @param {string} statusType - (connected|disconnected)
@@ -29,8 +32,22 @@ module.exports = function(RED) {
      * @param {jsforce.Connection} connection - the new jsForce Connection
      */
     this.handleNewConnection = (connection) => {
-      log('connection found:' + connection.accessToken);
+      // log('connection found:' + connection.accessToken);
       this.setStatus(STATUS_CONNECTED);
+
+      this.on('input', (msg) => {
+        // log('object to create:', JSON.stringify(msg.payload));
+        connection.sobject(this.eventObject).create(msg.payload, (err, result) => {
+          if (err || !result.success) {
+            msg.error = err;
+            msg.return = result;
+            this.send(msg);
+          } else {
+            msg.payload = result;
+            this.send(msg);
+          }
+        });
+      });
     };
 
     if (n.sfconn){
@@ -44,7 +61,7 @@ module.exports = function(RED) {
       if (connectionEmitter.connection){
         this.handleNewConnection(connectionEmitter.connection);
       } else {
-        log.error('no initial connection found.');
+        // log.error('no initial connection found.');
         this.setStatus(STATUS_DISCONNECTED);
       }
 

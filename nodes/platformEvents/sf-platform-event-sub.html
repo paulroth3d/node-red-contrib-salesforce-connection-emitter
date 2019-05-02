@@ -7,6 +7,14 @@
         <label for="node-input-sfconn"><i class="fa fa-tag"></i> Connection</label>
         <input type="sf-connection-emitter" id="node-input-sfconn" />
     </div>
+    <div class="form-row">
+        <label for="node-input-eventobject"><i class="fa fa-tag"></i> Event API Name</label>
+        <input type="text" id="node-input-eventobject" placeholder="">
+    </div>
+    <div class="form-row">
+        <label for="node-input-replayid"><i class="fa fa-tag"></i> Replay Id</label>
+        <input type="text" id="node-input-replayid" />
+    </div>
 </script>
 <script type="text/x-red" data-help-name="sf-platform-event-sub">
     <div>
@@ -18,6 +26,18 @@
             <dd>
                 Salesforce Connection to use.
             </dd>
+            <dt>
+                Platform Event API Name <span class="property-type">string</span>
+            </dt>
+            <dd>
+                API Name of the platform event to listen for.
+            </dd>
+            <dt>
+                Replay Id <span class="property-type">integer</span>
+            </dt>
+            <dd>
+                The Replay Id to start listening to messages from. (-2 to only listen to those moving forward). <a target='_blank' href='https://developer.salesforce.com/docs/atlas.en-us.api_streaming.meta/api_streaming/using_streaming_api_durability.htm'>See here for more information</a>
+            </dd>
         </dl>
     </div>
 </script>
@@ -27,15 +47,17 @@
         color: '#C0DEED',
         defaults: {
             name: { value: '' },
-            sfconn: { type:'sf-connection-emitter', required: true }
+            sfconn: { type:'sf-connection-emitter', required: true },
+            eventobject: { required: true },
+            replayid: { value: -2, type:'integer', validate:RED.validators.number() }
         },
         inputs: 0,
         outputs: 1,
-        icon: "salesforce.png",
+        icon: "feed.png",
         align: "left",
         paletteLabel: "Platform Event Subscriber",
         label: function(){
-            return this.name || "Platform Event Subscriber";
+            return this.name ? this.name : (this.eventobject ? `PE Subscribe: ${this.eventobject}` : "Platform Event Subscriber");
         },
         labelStyle: function(){
             return this.name?'':'node_label_italic';

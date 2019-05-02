@@ -7,6 +7,10 @@
         <label for="node-input-sfconn"><i class="fa fa-tag"></i> Connection</label>
         <input type="sf-connection-emitter" id="node-input-sfconn">
     </div>
+    <div class="form-row">
+        <label for="node-input-eventobject"><i class="fa fa-tag"></i> Event API Name</label>
+        <input type="text" id="node-input-eventobject" placeholder="">
+    </div>
 </script>
 <script type="text/x-red" data-help-name="sf-platform-event-pub">
     <div>
@@ -18,6 +22,12 @@
             <dd>
                 Salesforce Connection to use.
             </dd>
+            <dt>
+                Platform Event API Name <span class="property-type">string</span>
+            </dt>
+            <dd>
+                API Name of the platform event to create.
+            </dd>
         </dl>
     </div>
 </script>
@@ -27,15 +37,16 @@
         color: '#C0DEED',
         defaults: {
             name: { value: '' },
-            sfconn: { type:'sf-connection-emitter' }
+            sfconn: { type:'sf-connection-emitter' },
+            eventobject: { required: true }
         },
         inputs: 1,
         outputs: 1,
-        icon: "salesforce.png",
+        icon: "inject.png",
         align: "left",
         paletteLabel: "Platform Event Publisher",
         label: function(){
-            return this.name || "Platform Event Publisher";
+            return this.name ? this.name : (this.eventobject ? `PE Publish: ${this.eventobject}` : "Platform Event Publisher");
         },
         labelStyle: function(){
             return this.name?'':'node_label_italic';

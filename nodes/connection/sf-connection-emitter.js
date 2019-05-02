@@ -73,7 +73,7 @@ module.exports = function(RED) {
         }
 
         this.connection = conn;
-        log('connection successful.... access token:' + this.connection.accessToken);
+        log('connection successful for user:' + this.username);
         this.emitter.emit('newConnection', this.connection);
       });
     });

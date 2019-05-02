@@ -1,4 +1,5 @@
 const log = require('fancy-log');
+
 // const jsforce = require('jsforce');
 
 const STATUS_CONNECTED = 'CONNECTED';
@@ -9,6 +10,12 @@ module.exports = function(RED) {
 
   function SalesforcePlatformEventSubscriber(n){
     RED.nodes.createNode(this, n);
+
+    //-- capture information from the config
+    this.eventobject = n.eventobject;
+    this.replayId = parseInt(n.replayid, 10);
+    this.channel = `/event/${this.eventobject}`;
+
 
     //-- @TODO: investigate mixin / inheritance
 
@@ -28,33 +35,36 @@ module.exports = function(RED) {
 
     this.loggerExtension = {
       incoming: (message, callback) => {
-        log('extension messageReceived', message);
-        log(`replayId:${this.replayId}`);
+        //log('extension messageReceived', message);
+        if (message.channel === this.channel && message.data && message.data.event && message.data.event.replayId ){
+          this.replayId = parseInt(message.data.event.replayId, 10);
+        }
         callback(message);
       }
     }
+
+    //-- @TODO: need a bit more help getting this to work, because it isn't pushing them through...
+    // this.loggerReplayExtension = new jsforce.StreamingExtension.Replay(channel); //-- , replayId);
 
     /**
      * Handler if a connection has been captured
      * @param {jsforce.Connection} connection - the new jsForce Connection
      */
     this.handleNewConnection = (connection) => {
-      log('connection found:' + connection.accessToken);
+      // log('connection found:' + connection.accessToken);
       this.setStatus(STATUS_CONNECTED);
 
       if (this.subscription){
         this.subscription.cancel();
       }
 
-      this.replayId = 200;
-
-      log('loggerExtension:' + this.loggerExtension);
+      // log('loggerExtension:' + this.loggerExtension);
       const fayeClient = connection.streaming.createClient([this.loggerExtension]);
-
-      const channel = `/event/ltng_Req_Hello__e`;
-      this.subscription = fayeClient.subscribe(channel, (data) => {
-        log('topic recieved data', data);
-
+      // const fayeClient = connection.streaming.createClient([this.loggerReplayExtension]);
+      
+      this.subscription = fayeClient.subscribe(this.channel, (data) => {
+        // log('topic recieved data', data);
+        log(`replayId:${this.replayId}`);
         this.send({payload:data});
       })
     };
@@ -70,7 +80,7 @@ module.exports = function(RED) {
       if (connectionEmitter.connection){
         this.handleNewConnection(connectionEmitter.connection);
       } else {
-        log.error('no initial connection found.');
+        // log.error('no initial connection found.');
         this.setStatus(STATUS_DISCONNECTED);
       }
 
