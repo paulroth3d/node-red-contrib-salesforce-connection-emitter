@@ -46,6 +46,8 @@ module.exports = function(RED) {
     this.connection = null;
 
     this.emitter.on('refresh', () => {
+
+      
       let host = this.host;
       if (!host){
         log.error('host was not found');
@@ -56,9 +58,10 @@ module.exports = function(RED) {
       if (host.indexOf('https://') !== 0){
         host = 'https://' + host;
       }
-      log(`refresh requested:${host}`);
-      log(`username:${this.username}`);
-      log(`password:${this.password}`);
+
+      // log(`refresh requested:${host}`);
+      // log(`username:${this.username}`);
+      // log(`password:${this.password}`);
 
       let conn = new jsforce.Connection({
         loginUrl: host
@@ -70,7 +73,7 @@ module.exports = function(RED) {
         }
 
         this.connection = conn;
-        log('access token:' + this.connection.accessToken);
+        log('connection successful.... access token:' + this.connection.accessToken);
         this.emitter.emit('newConnection', this.connection);
       });
     });
