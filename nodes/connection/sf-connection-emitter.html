@@ -1,0 +1,70 @@
+<script type="text/x-red" data-template-name="sf-connection-emitter">
+    <div class="form-row">
+        <label for="node-config-input-host"><i class="fa fa-tag"></i> Host</label>
+        <input type="text" id="node-config-input-host" placeholder="test.salesforce.com">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-username"><i class="fa fa-tag"></i> Username</label>
+        <input type="text" id="node-config-input-username" placeholder="">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-password"><i class="fa fa-tag"></i> Password</label>
+        <input type="text" id="node-config-input-password" placeholder="">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-token"><i class="fa fa-tag"></i> Security Token</label>
+        <input type="text" id="node-config-input-token" placeholder="">
+    </div>
+</script>
+<script type="text/x-red" data-help-name="sf-connection-emitter">
+    <div>
+        <a class="node-info-header expanded" href="#"><i class="fa fa-angle-right"></i>Inputs</a>
+        <dl class="message-properties">
+            <dt>
+                Host <span class="property-type">string</span>
+            </dt>
+            <dd>
+                The domain to connect to Salesforce through. Ex: test.salesforce.com or login.salesforce.com, etc.
+            </dd>
+            <dt>
+                Username <span class="property-type">string</span>
+            </dt>
+            <dd>
+                Username to use when connecting to Salesforce
+            </dd>
+            <dt>
+                Password <span class="property-type">string</span>
+            </dt>
+            <dd>
+                Password for the user.
+            </dd>
+            <dt>
+                Token <span class="property-type">node</span>
+            </dt>
+            <dd>
+                Security Token for the user.
+            </dd>
+        </dl>
+    </div>
+</script>
+<script type="text/javascript">
+    RED.nodes.registerType('sf-connection-emitter', {
+        category: 'config',
+        color: '#C0DEED',
+        defaults: {
+            host: { value: 'test.salesforce.com', required:true },
+            username: { value: '', required:true },
+            password: { value: '', required:true },
+            token: { value: '', required:false }
+        },
+        label: function(){
+            return this.username + '@' + this.host;
+        }, 
+        credentials: {
+            host: { value: 'test.salesforce.com', required:true },
+            username: { value: '', required:true },
+            password: { value: '', required:true },
+            token: { value: '', required:false }
+        }
+    });
+</script>

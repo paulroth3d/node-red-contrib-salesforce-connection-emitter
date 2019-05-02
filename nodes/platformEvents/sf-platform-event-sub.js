@@ -7,6 +7,8 @@ module.exports = function(RED) {
   function SalesforcePlatformEventSubscriber(n){
     RED.nodes.createNode(this, n);
 
+    log('connection', n.connection);
+
     const node = this;
 
     node.on("input", (msg) => {
