@@ -46,7 +46,6 @@ module.exports = function(RED) {
     this.connection = null;
 
     this.emitter.on('refresh', () => {
-
       
       let host = this.host;
       if (!host){

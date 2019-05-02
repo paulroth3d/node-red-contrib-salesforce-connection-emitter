@@ -70,21 +70,21 @@ module.exports = function(RED) {
     };
 
     if (n.sfconn){
-      const connectionEmitter = RED.nodes.getNode(n.sfconn);
+      this.connectionEmitter = RED.nodes.getNode(n.sfconn);
 
-      if (!connectionEmitter.emitter){
+      if (!this.connectionEmitter.emitter){
         log.error('sf-platform-event-sub: no connection / emitter found.');
         return;
       }
 
-      if (connectionEmitter.connection){
-        this.handleNewConnection(connectionEmitter.connection);
+      if (this.connectionEmitter.connection){
+        this.handleNewConnection(this.connectionEmitter.connection);
       } else {
         // log.error('no initial connection found.');
         this.setStatus(STATUS_DISCONNECTED);
       }
 
-      connectionEmitter.emitter.on('newConnection', (connection) => {
+      this.connectionEmitter.emitter.on('newConnection', (connection) => {
         this.handleNewConnection(connection);
       });
     }
