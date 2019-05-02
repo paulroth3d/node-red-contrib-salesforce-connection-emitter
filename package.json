@@ -16,11 +16,9 @@
   "node-red": {
     "nodes": {
       "sf-platform-event-sub": "nodes/platformEvents/sf-platform-event-sub.js",
-      "sf-platform-event-pub": "nodes/platformEvents/sf-platform-event-pub.js"
+      "sf-platform-event-pub": "nodes/platformEvents/sf-platform-event-pub.js",
+      "sf-connection-emitter": "nodes/connection/sf-connection-emitter.js"
     }
-  },
-  "old-node-red": {
-    "sf-platform-event-config": "nodes/connection/sf-connection-emitter.js"
   },
   "keywords": [
     "salesforce",
