@@ -7,9 +7,22 @@ module.exports = function(RED) {
   function SalesforcePlatformEventSubscriber(n){
     RED.nodes.createNode(this, n);
 
-    log('connection', n.connection);
+    log('connection', n.sfconn);
 
     const node = this;
+
+    if (n.sfconn){
+      const connectionEmitter = RED.nodes.getNode(n.sfconn);
+      log('found connectionEmitter:', connectionEmitter);
+      log('connectionEmitter.host:', connectionEmitter.host);
+      log('emitter:', connectionEmitter.emitter);
+
+      if (connectionEmitter.emitter){
+        connectionEmitter.emitter.on('newEvent', (msg) => {
+          log('connectionEmitter.emitter:', msg);
+        });
+      }
+    }
 
     node.on("input", (msg) => {
       msg.payload = msg.payload || {};
@@ -18,7 +31,7 @@ module.exports = function(RED) {
     });
   }
 
-  log('hello');
+  // log('hello');
   // console.log('hello');
 
   RED.nodes.registerType('sf-platform-event-sub', SalesforcePlatformEventSubscriber);
