@@ -14,6 +14,75 @@ const EventEmitter = require('events').EventEmitter;
 
 const jsforce = require('jsforce');
 
+debugger;
+class ConnectionEmitter {
+
+  constructor(RED, config, nodeRedModule){
+    this.RED = RED;
+    this.config = config;
+    this.nodeRedModule = nodeRedModule;
+
+    debugger;
+
+    this.host = config.host;
+    this.username = config.username;
+    this.password = config.password;
+    if (config.token) {
+      this.password += config.token;
+    }
+    log(`host:${this.host}`);
+    log(`username:${this.username}`);
+    log(`password:${this.password}`);
+  }
+}
+
+function setupNodeRed(RED){
+  RED.nodes.registerType('sf-connection-emitter', function(config){
+    this.c = new ConnectionEmitter(RED, config, this);
+  }, {
+    credentials: {
+      host: { type:'text' },
+      username: { type:'text' },
+      password: { type:'password' },
+      token: { type:'password' }
+    }
+  });
+}
+module.exports = setupNodeRed;
+
+
+/*
+module.exports = function(RED) {
+  'use strict';
+
+  function ConnectionEmitter(n){
+    RED.nodes.createNode(this, n);
+
+    // const node = this;
+
+    this.host = this.credentials.host;
+    this.username = this.credentials.username;
+    this.password = this.credentials.password;
+    if (this.credentials.token) {
+      this.password += this.credentials.token;
+    }
+    log(`host:${host}`);
+    log(`username:${username}`);
+    log(`password:${password}`);
+  }
+
+  RED.nodes.registerType('sf-connection-emitter', ConnectionEmitter, {
+    credentials: {
+      host: { type:'text' },
+      username: { type:'text' },
+      password: { type:'password' },
+      token: { type:'password' }
+    }
+  });
+};
+*/
+
+/*
 module.exports = function(RED) {
   'use strict';
 
@@ -104,3 +173,4 @@ module.exports = function(RED) {
     }
   });
 };
+*/
