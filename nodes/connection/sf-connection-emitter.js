@@ -79,12 +79,6 @@ module.exports = function(RED) {
 
     this.emitter.emit('refresh');
 
-    /*
-    setTimeout(() => {
-      this.emitter.emit('newEvent', 'Krunal');
-    }, 2000);
-    */
-
     //-- verify the info is accurate
     // log('host:', this.host);
     // log('username:', this.username);
