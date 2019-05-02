@@ -21,6 +21,21 @@ module.exports = function(RED) {
         connectionEmitter.emitter.on('newEvent', (msg) => {
           log('connectionEmitter.emitter:', msg);
         });
+
+        this.handleNewConnection = (connection) => {
+          log('connection found:' + connection.accessToken);
+        };
+
+        if (connectionEmitter.connection){
+          this.handleNewConnection(connectionEmitter.connection);
+        } else {
+          log('connection not found');
+        }
+
+        connectionEmitter.emitter.on('newConnection', (connection) => {
+          log('platform event sub.newConnection:' + connection.accessToken);
+          this.handleNewConnection(connection);
+        });
       }
     }
 
