@@ -11,6 +11,7 @@
 
 const log = require('fancy-log');
 const EventEmitter = require('events').EventEmitter;
+const sinon = require('sinon');
 
 const jsforce = require('jsforce');
 
@@ -93,23 +94,36 @@ class ConnectionEmitter {
         host = 'https://' + host;
       }
 
-      // log(`refresh requested:${host}`);
-      // log(`username:${this.username}`);
-      // log(`password:${this.password}`);
-
-      let conn = new jsforce.Connection({
-        loginUrl: host
-      });
-      conn.login(this.username, this.password, (err, userInfo) => {
-        if (err){
-          log.error('error occurred during login:', err);
-          return;
-        }
-
-        this.connection = conn;
-        log('connection successful for user:' + this.username);
+      //-- support functional testing while offline.
+      if (process.env.NODE_ENV === 'offline'){
+        //-- mock without needing to login
+        log(`refresh requested:${host}`);
+        log(`username:${this.username}`);
+        log(`password:${this.password}`);
+        this.connection = {
+          streaming : {
+            createClient: sinon.mock().returns({
+              subscribe: sinon.mock()
+            })
+          }
+        };
         this.emitter.emit('newConnection', this.connection);
-      });
+       return;
+      } else {
+        let conn = new jsforce.Connection({
+          loginUrl: host
+        });
+        conn.login(this.username, this.password, (err, userInfo) => {
+          if (err){
+            log.error('error occurred during login:', err);
+            return;
+          }
+  
+          this.connection = conn;
+          log('connection successful for user:' + this.username);
+          this.emitter.emit('newConnection', this.connection);
+        });
+      }
     });
 
     this.emitter.emit('refresh');
