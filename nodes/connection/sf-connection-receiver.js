@@ -29,6 +29,8 @@ class SfConnectionReceiver {
     nodeRedNode.on('close', (done) => {
       this.handleClose(done);
     });
+
+    return this;
   }
 
   listenToConnection(connectionPropName){
@@ -51,6 +53,8 @@ class SfConnectionReceiver {
     this.connectionEmitter.on('newConnection', (connection) => {
       this.handleNewConnection(connection);
     });
+
+    return this;
   }
 
   /**
