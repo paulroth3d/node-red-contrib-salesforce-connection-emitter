@@ -70,7 +70,9 @@ module.exports = function(RED) {
     };
 
     if (n.sfconn){
-      this.connectionEmitter = RED.nodes.getNode(n.sfconn);
+      this.connectionEmitter = RED.nodes.getNode(n.sfconn).info;
+
+      const myConfig = this.connectionEmitter.getConfig();
 
       if (!this.connectionEmitter.emitter){
         log.error('sf-platform-event-sub: no connection / emitter found.');

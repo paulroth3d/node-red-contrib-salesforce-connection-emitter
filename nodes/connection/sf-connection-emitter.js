@@ -14,15 +14,15 @@ const EventEmitter = require('events').EventEmitter;
 
 const jsforce = require('jsforce');
 
-debugger;
 class ConnectionEmitter {
 
-  constructor(RED, config, nodeRedModule){
+  initialize(RED, config, nodeRedModule){
     this.RED = RED;
     this.config = config;
     this.nodeRedModule = nodeRedModule;
 
-    debugger;
+    this.connection = null;
+    this.emitter = null;
 
     this.host = config.host;
     this.username = config.username;
@@ -30,74 +30,38 @@ class ConnectionEmitter {
     if (config.token) {
       this.password += config.token;
     }
-    log(`host:${this.host}`);
-    log(`username:${this.username}`);
-    log(`password:${this.password}`);
-  }
-}
 
-function setupNodeRed(RED){
-  RED.nodes.registerType('sf-connection-emitter', function(config){
-    this.c = new ConnectionEmitter(RED, config, this);
-  }, {
-    credentials: {
-      host: { type:'text' },
-      username: { type:'text' },
-      password: { type:'password' },
-      token: { type:'password' }
-    }
-  });
-}
-module.exports = setupNodeRed;
+    // log(`host:${this.host}`);
+    // log(`username:${this.username}`);
+    // log(`password:${this.password}`);
 
+    this.expandConfigEnvironmentVariables();
 
-/*
-module.exports = function(RED) {
-  'use strict';
+    this.resetEmitter();
 
-  function ConnectionEmitter(n){
-    RED.nodes.createNode(this, n);
+    // Nodes are closed when a new flow is deployed.
+		nodeRedModule.on('close', function(done){
+			if (this.connection){
+				this.connection.logout(() => {
+					return done();
+				});
+			}else{
+				return done();
+			}
+		});
 
-    // const node = this;
-
-    this.host = this.credentials.host;
-    this.username = this.credentials.username;
-    this.password = this.credentials.password;
-    if (this.credentials.token) {
-      this.password += this.credentials.token;
-    }
-    log(`host:${host}`);
-    log(`username:${username}`);
-    log(`password:${password}`);
+    return this;
   }
 
-  RED.nodes.registerType('sf-connection-emitter', ConnectionEmitter, {
-    credentials: {
-      host: { type:'text' },
-      username: { type:'text' },
-      password: { type:'password' },
-      token: { type:'password' }
-    }
-  });
-};
-*/
+  getConfig(){
+    return this.config;
+  }
 
-/*
-module.exports = function(RED) {
-  'use strict';
-
-  function ConnectionEmitter(n){
-    RED.nodes.createNode(this, n);
-
-    // const node = this;
-
-    this.host = this.credentials.host;
-    this.username = this.credentials.username;
-    this.password = this.credentials.password;
-    if (this.credentials.token) {
-      this.password += this.credentials.token;
-    }
-
+  /**
+   * If the host, username, or password evaluate to environment variables,
+   * then use those values instead.
+   */
+  expandConfigEnvironmentVariables(){
     //-- if environment variables are provided, translate to use those instead.
     if (this.host && process.env.hasOwnProperty(this.host)){
       this.host = process.env[this.host];
@@ -108,7 +72,13 @@ module.exports = function(RED) {
     if (this.password && process.env.hasOwnProperty(this.password)){
       this.password = process.env[this.password];
     }
+  }
 
+  /**
+   * Initialize the emitter to be used when communicating the connections.
+   * @return {node.EventEmitter}
+   */
+  resetEmitter(){
     this.emitter = new EventEmitter();
     
     //-- initialize the connection to null initially.
@@ -147,24 +117,13 @@ module.exports = function(RED) {
     });
 
     this.emitter.emit('refresh');
-
-    //-- verify the info is accurate
-    // log('host:', this.host);
-    // log('username:', this.username);
-    // log('password:', this.password);
-
-    this.on('close', (removed, done) => {
-      if (removed){
-        //-- the node has been deleted
-      } else {
-        //-- the note is being restarted
-      }
-      log('close event called');
-      done();
-    });
   }
+}
 
-  RED.nodes.registerType('sf-connection-emitter', ConnectionEmitter, {
+function setupNodeRed(RED){
+  RED.nodes.registerType('sf-connection-emitter', function(config){
+    this.info = new ConnectionEmitter().initialize(RED, config, this);
+  }, {
     credentials: {
       host: { type:'text' },
       username: { type:'text' },
@@ -172,5 +131,9 @@ module.exports = function(RED) {
       token: { type:'password' }
     }
   });
-};
-*/
+}
+
+//-- because it seems we cannot export the class outright...
+setupNodeRed.infoClass = ConnectionEmitter;
+
+module.exports = setupNodeRed;
