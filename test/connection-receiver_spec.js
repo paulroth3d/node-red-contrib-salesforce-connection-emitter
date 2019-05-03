@@ -1,15 +1,17 @@
 /* global describe it beforeEach */
 
-const log = require('fancy-log');
+const log = require('fancy-log'); // eslint-disable-line no-unused-vars
 
 const assert = require('assert');
 
 const EventEmitter = require('events').EventEmitter;
 const sinon = require('sinon');
-const jsforce = require('jsforce');
+
+//-- include for mocks later
+const jsforce = require('jsforce'); // eslint-disable-line no-unused-vars
 
 const SfConnectionReceiver = require('../nodes/connection/sf-connection-receiver');
-const SfConnectionEmitter = require('../nodes/connection/sf-connection-emitter');
+// const SfConnectionEmitter = require('../nodes/connection/sf-connection-emitter');
 
 const RED_MOCK = {
   nodes: {

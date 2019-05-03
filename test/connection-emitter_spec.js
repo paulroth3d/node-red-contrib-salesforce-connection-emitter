@@ -1,17 +1,14 @@
 /* global describe it beforeEach */
 
 //-- logger
-// const log = require('fancy-log');
+const log = require('fancy-log'); // eslint-disable-line no-unused-vars
+
 //-- asserts for mocha tests / others are also available.
-const log = require('fancy-log');
 const assert = require('assert');
 
 const ConnectionEmitter = require('../nodes/connection/sf-connection-emitter').infoClass;
 
 const jsforce = require('jsforce');
-
-//-- helper for node red
-const helper = require('node-red-node-test-helper');
 
 const sinon = require('sinon');
 
@@ -38,13 +35,13 @@ describe('NodeClass', () => {
     //-- stub out jsforce connection
     try {
       jsforce.Connection.prototype.login.restore();
-    } catch(err){}
+    } catch(err){} // eslint-disable-line no-empty
     sinon.stub(jsforce.Connection.prototype,'login').callsArgWith(2,null, {});
   });
 
   it('Should create without throwing exceptions', (done) => {
     try {
-      const emitter = new ConnectionEmitter();
+      new ConnectionEmitter();
     } catch(error){
       assert.fail('Error occurred while creating an instance of the node class:', JSON.stringify(error));
     }

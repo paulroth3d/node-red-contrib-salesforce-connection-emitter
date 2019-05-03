@@ -1,4 +1,4 @@
-const log = require('fancy-log');
+const log = require('fancy-log'); // eslint-disable-line no-unused-vars
 
 const ConnectionReceiver = require('../connection/sf-connection-receiver');
 

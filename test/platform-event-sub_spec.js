@@ -1,26 +1,30 @@
 /* global describe it beforeEach */
 
-const log = require('fancy-log');
+const log = require('fancy-log'); // eslint-disable-line no-unused-vars
 
 const assert = require('assert');
 
 const EventEmitter = require('events').EventEmitter;
 const sinon = require('sinon');
-const jsforce = require('jsforce');
+
+//-- include for mocks later
+const jsforce = require('jsforce'); // eslint-disable-line no-unused-vars
 
 // const SfConnectionReceiver = require('../nodes/connection/sf-connection-receiver');
-const PlatformEventSub = require('../nodes/platformEvents/sf-platform-event-sub').infoClass;
+const PlatformEventSub = require('../nodes/platformEvents/sf-platform-event-sub')
+const PlatformEventSubClass = PlatformEventSub.infoClass;
+
+//-- helper for node red
+// const helper = require('node-red-node-test-helper');
 
 const RED_MOCK = {
   nodes: {
-    getNode: () => {
-      const results = {
-        info: {
-          connection: {},
-          emitter: new EventEmitter()
-        }
-      };
-    }
+    getNode: sinon.stub().returns({
+      info: {
+        connection: {},
+        emitter: new EventEmitter()
+      }
+    })
   }
 };
 
@@ -53,7 +57,7 @@ describe('platform-event-subscriber', () => {
   });
 
   it('can set connected status', (done) => {
-    const subscriber = new PlatformEventSub();
+    const subscriber = new PlatformEventSubClass();
     subscriber.initialize(RED_MOCK, CONFIG_MOCK, NODE_MOCK);
     subscriber.setStatus(subscriber.STATUS_CONNECTED);
     let connectedArg = NODE_MOCK.status.args[0][0];
