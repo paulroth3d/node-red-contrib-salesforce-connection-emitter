@@ -105,7 +105,10 @@ class ConnectionEmitter {
             createClient: sinon.mock().returns({
               subscribe: sinon.mock()
             })
-          }
+          },
+          sobject: sinon.mock().returns({
+            create: sinon.mock()
+          })
         };
         this.emitter.emit('newConnection', this.connection);
        return;

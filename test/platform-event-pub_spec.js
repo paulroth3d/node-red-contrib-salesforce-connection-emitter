@@ -11,8 +11,8 @@ const sinon = require('sinon');
 const jsforce = require('jsforce'); // eslint-disable-line no-unused-vars
 
 // const SfConnectionReceiver = require('../nodes/connection/sf-connection-receiver');
-const PlatformEventSub = require('../nodes/platformEvents/sf-platform-event-sub')
-const PlatformEventSubClass = PlatformEventSub.infoClass;
+const PlatformEventPub = require('../nodes/platformEvents/sf-platform-event-pub')
+const PlatformEventPubClass = PlatformEventPub.infoClass;
 
 //-- helper for node red
 // const helper = require('node-red-node-test-helper');
@@ -21,16 +21,7 @@ const RED_MOCK = {
   nodes: {
     getNode: sinon.stub().returns({
       info: {
-        connection: {
-          streaming : {
-            createClient: sinon.mock().returns({
-              subscribe: sinon.mock()
-            })
-          },
-          sobject: sinon.mock().returns({
-            create: sinon.mock()
-          })
-        },
+        connection: {},
         emitter: new EventEmitter()
       }
     })
@@ -47,7 +38,7 @@ NODE_MOCK.status = sinon.spy();
 /**
  * Ensure that the mocha tests run
  */
-describe('platform-event-subscriber', () => {
+describe('platform-event-publisher', () => {
   beforeEach(() => {
     // try {
     //   jsforce.Connection.prototype.login.restore();
@@ -56,8 +47,8 @@ describe('platform-event-subscriber', () => {
 
     NODE_MOCK.status.resetHistory();
 
-    // CONFIG_MOCK.sfconn = new EventEmitter();
-    // CONFIG_MOCK.sfconn.idprop = 'cuca';
+    CONFIG_MOCK.sfconn = new EventEmitter();
+    CONFIG_MOCK.sfconn.idprop = 'cuca';
   });
   
   it('should be running mocha tests', (done) => {
@@ -66,7 +57,7 @@ describe('platform-event-subscriber', () => {
   });
 
   it('can set connected status', (done) => {
-    const subscriber = new PlatformEventSubClass();
+    const subscriber = new PlatformEventPubClass();
     subscriber.initialize(RED_MOCK, CONFIG_MOCK, NODE_MOCK);
     subscriber.setStatus(subscriber.STATUS_CONNECTED);
     let connectedArg = NODE_MOCK.status.args[0][0];
@@ -75,19 +66,17 @@ describe('platform-event-subscriber', () => {
     done();
   });
 
-  
-
   //-- tests from inherited class - receiver
   it('Can create ConnectionReceiver without failure', (done) => {
-    const subscriber = new PlatformEventSubClass();
-    subscriber.initialize(RED_MOCK, CONFIG_MOCK, NODE_MOCK);
+    const receiver = new PlatformEventPubClass();
+    receiver.initialize(RED_MOCK, CONFIG_MOCK, NODE_MOCK);
     done();
   });
 
   it('Can set connected status', (done) => {
-    const subscriber = new PlatformEventSubClass();
-    subscriber.initialize(RED_MOCK, CONFIG_MOCK, NODE_MOCK);
-    subscriber.setStatus(subscriber.STATUS_CONNECTED);
+    const receiver = new PlatformEventPubClass();
+    receiver.initialize(RED_MOCK, CONFIG_MOCK, NODE_MOCK);
+    receiver.setStatus(receiver.STATUS_CONNECTED);
     let connectedArg = NODE_MOCK.status.args[0][0];
     assert.equal(connectedArg.fill, 'green');
     assert.equal(connectedArg.text, 'connected');
@@ -95,51 +84,25 @@ describe('platform-event-subscriber', () => {
   });
 
   it('can set disconnected status', (done) => {
-    const subscriber = new PlatformEventSubClass();
-    subscriber.initialize(RED_MOCK, CONFIG_MOCK, NODE_MOCK);
-    subscriber.setStatus(subscriber.STATUS_DISCONNECTED);
+    const receiver = new PlatformEventPubClass();
+    receiver.initialize(RED_MOCK, CONFIG_MOCK, NODE_MOCK);
+    receiver.setStatus(receiver.STATUS_DISCONNECTED);
     let connectedArg = NODE_MOCK.status.args[0][0];
     assert.equal(connectedArg.fill, 'red');
     assert.equal(connectedArg.text, 'disconnected');
     done();
   });
 
-  /*
   it('can detect existing connection', (done) => {
-    const subscriber = new PlatformEventSubClass();
-    subscriber.initialize(RED_MOCK, CONFIG_MOCK, NODE_MOCK);
+    const receiver = new PlatformEventPubClass();
+    receiver.initialize(RED_MOCK, CONFIG_MOCK, NODE_MOCK);
 
-    CONFIG_MOCK.sfconn.connection = {
-      streaming : {
-        createClient: sinon.mock().returns({
-          subscribe: sinon.mock()
-        })
-      },
-      sobject: sinon.mock().returns({
-        create: sinon.mock()
-      })
-    };
+    CONFIG_MOCK.sfconn.connection = {};
 
-    subscriber.listenToConnection('sfconn');
+    receiver.listenToConnection('sfconn');
 
     let connectedArg = NODE_MOCK.status.args[0][0];
     assert.equal(connectedArg.text, 'connected');
     done();
   });
-
-  it('can listen for new login connections', (done) => {
-    const subscriber = new PlatformEventSubClass();
-    subscriber.initialize(RED_MOCK, CONFIG_MOCK, NODE_MOCK);
-
-    subscriber.listenToConnection('sfconn');
-
-    NODE_MOCK.status.resetHistory();
-    
-    CONFIG_MOCK.sfconn.emit('newConnection', {});
-
-    let connectedArg = NODE_MOCK.status.args[0][0];
-    assert.equal(connectedArg.text, 'connected');
-    done();
-  });
-  */
 });
