@@ -26,9 +26,9 @@ class SfConnectionReceiver {
     this.STATUS_CONNECTED = STATUS_CONNECTED;
     this.STATUS_DISCONNECTED = STATUS_DISCONNECTED;
 
-    nodeRedNode.on('close', (done) => {
-      this.handleClose(done);
-    });
+    // nodeRedNode.on('close', (done) => {
+    //   this.handleClose(done);
+    // });
 
     return this;
   }
@@ -42,7 +42,13 @@ class SfConnectionReceiver {
       log.error('Config does not have property:' + connectionPropName);
     }
 
-    this.connectionEmitter = this.config[connectionPropName];
+    if (typeof this.config[connectionPropName] === 'undefined'){
+      log.error('unable to find config[' + connectionPropName + ']');
+      return;
+    }
+
+    const connectionKey = this.config[connectionPropName];
+    this.connectionEmitter = this.RED.nodes.getNode(connectionKey).info;
     
     if (this.connectionEmitter.connection){
       this.handleNewConnection(this.connectionEmitter.connection);
