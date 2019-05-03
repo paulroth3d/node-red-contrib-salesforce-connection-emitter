@@ -25,8 +25,8 @@ const config = {
 /**
  * Ensure that the mocha tests run
  */
-describe('Mocha Tests', () => {
-  it('should be running', (done) => {
+describe('connection-emmitter', () => {
+  it('should be running mocha tests', (done) => {
     assert.equal(1+2,3,'Tests are running in mocha');
     done();
   });

@@ -53,10 +53,6 @@ class ConnectionEmitter {
     return this;
   }
 
-  getConfig(){
-    return this.config;
-  }
-
   /**
    * If the host, username, or password evaluate to environment variables,
    * then use those values instead.
