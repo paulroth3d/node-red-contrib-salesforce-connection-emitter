@@ -13,19 +13,12 @@ const SfConnectionEmitter = require('../nodes/connection/sf-connection-emitter')
 
 const RED_MOCK = {
   nodes: {
-    getNode: () => {
-      const results = {
-        info: {
-          connection: {},
-          emitter: new EventEmitter()
-        }
-      };
-    }
+    getNode: () => sinon.stub()
   }
 };
 
 const CONFIG_MOCK = {
-  sfconn: new EventEmitter()
+  sfconn: 'some-connection'
 };
 
 const NODE_MOCK = new EventEmitter();
@@ -43,8 +36,7 @@ describe('connection-receiver', () => {
 
     NODE_MOCK.status.resetHistory();
 
-    CONFIG_MOCK.sfconn = new EventEmitter();
-    CONFIG_MOCK.sfconn.idprop = 'cuca';
+    RED_MOCK.nodes.getNode = sinon.stub();
   });
   
   it('should be running mocha tests', (done) => {
@@ -82,7 +74,12 @@ describe('connection-receiver', () => {
     const receiver = new SfConnectionReceiver();
     receiver.initialize(RED_MOCK, CONFIG_MOCK, NODE_MOCK);
 
-    CONFIG_MOCK.sfconn.connection = {};
+    RED_MOCK.nodes.getNode.returns({
+      info: {
+        connection: {},
+        emitter: new EventEmitter()
+      }
+    });
 
     receiver.listenToConnection('sfconn');
 
@@ -95,11 +92,19 @@ describe('connection-receiver', () => {
     const receiver = new SfConnectionReceiver();
     receiver.initialize(RED_MOCK, CONFIG_MOCK, NODE_MOCK);
 
+    const connectionEmitter = {
+      info: {
+        connection: null,
+        emitter: new EventEmitter()
+      }
+    };
+
+    RED_MOCK.nodes.getNode.returns(connectionEmitter);
     receiver.listenToConnection('sfconn');
 
     NODE_MOCK.status.resetHistory();
     
-    CONFIG_MOCK.sfconn.emit('newConnection', {});
+    connectionEmitter.info.emitter.emit('newConnection', {});
 
     let connectedArg = NODE_MOCK.status.args[0][0];
     assert.equal(connectedArg.text, 'connected');
