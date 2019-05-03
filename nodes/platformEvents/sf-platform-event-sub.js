@@ -1,11 +1,13 @@
 const log = require('fancy-log');
 
-// const jsforce = require('jsforce');
-
 const ConnectionReceiver = require('../connection/sf-connection-receiver');
 
+/**
+ * Node Red Node that subscribes to platform events and dispatches event messages.
+ */
 class PlatformEventSubscriber extends ConnectionReceiver {
   
+  /** Constructor */
   constructor(){
     super();
 
@@ -23,6 +25,12 @@ class PlatformEventSubscriber extends ConnectionReceiver {
     };
   }
 
+  /**
+   * Initialize the node red node
+   * @param {object} RED - Node Red framework
+   * @param {object} config - configuration for module from the node red editor
+   * @param {object} nodeRedNode - the node red node instance
+   */
   initialize(RED, config, nodeRedNode){
     super.initialize(RED, config, nodeRedNode);
 
@@ -32,12 +40,18 @@ class PlatformEventSubscriber extends ConnectionReceiver {
     return this;
   }
 
+  /**
+   * Handler for when a new connection has been established
+   * @param {jsforce.connection} connection - updated connection
+   */
   handleNewConnection(connection){
     super.handleNewConnection(connection);
 
     if (this.subscription){
       this.subscription.cancel();
     }
+
+    //-- @TODO, use the connection failure plugin and the durable connection plugin
 
     // log('loggerExtension:' + this.loggerExtension);
     const fayeClient = connection.streaming.createClient([this.loggerExtension]);
@@ -56,6 +70,10 @@ class PlatformEventSubscriber extends ConnectionReceiver {
   // }
 }
 
+/**
+ * Initialize node-red node module
+ * @param {NodeRed} RED - Node Red framework instance
+ */
 function setupNodeRed(RED){
   RED.nodes.registerType('sf-platform-event-sub', function(config){
     RED.nodes.createNode(this, config);
