@@ -59,6 +59,7 @@ class PlatformEventSubscriber extends ConnectionReceiver {
 
 function setupNodeRed(RED){
   RED.nodes.registerType('sf-platform-event-sub', function(config){
+    RED.nodes.createNode(this, config);
 
     //-- capture information from the config
     this.eventobject = config.eventobject;

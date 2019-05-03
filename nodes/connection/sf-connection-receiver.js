@@ -56,7 +56,7 @@ class SfConnectionReceiver {
       this.setStatus(STATUS_DISCONNECTED);
     }
 
-    this.connectionEmitter.on('newConnection', (connection) => {
+    this.connectionEmitter.emitter.on('newConnection', (connection) => {
       this.handleNewConnection(connection);
     });
 

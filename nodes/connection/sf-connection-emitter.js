@@ -118,6 +118,7 @@ class ConnectionEmitter {
 
 function setupNodeRed(RED){
   RED.nodes.registerType('sf-connection-emitter', function(config){
+    RED.nodes.createNode(this, config);
     this.info = new ConnectionEmitter().initialize(RED, config, this);
   }, {
     credentials: {
