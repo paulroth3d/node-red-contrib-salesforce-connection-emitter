@@ -1,13 +1,15 @@
 const log = require('fancy-log'); // eslint-disable-line no-unused-vars
 
+const ConnectionReceiver = require('../connection/sf-connection-receiver');
+
 /**
  * Node Red Node to run a SOQL Query
  */
-class SoqlQueryNode {
+class SoqlQueryNode extends ConnectionReceiver {
 
   /** Constructor */
   constructor() {
-    // super();
+    super();
 
     //-- initialize component properties
   }
@@ -19,21 +21,32 @@ class SoqlQueryNode {
    * @param {object} nodeRedNode - the node red instance
    */
   initialize(RED, config, nodeRedNode) {
-    // super.initialize(RED, config, nodeRedNode);
+    super.initialize(RED, config, nodeRedNode);
+
+    this.RED = RED;
+    this.config = config;
+    this.nodeRedNode = nodeRedNode;
 
     //-- capture information from the nodeRedNode
     this.name = nodeRedNode.name;
 
+    return this;
+  }
+
+  handleNewConnection(connection){
+    super.handleNewConnection(connection);
+
     //-- handle events on the nodeRedNode
-    nodeRedNode.on('input', (msg) => {
+    this.nodeRedNode.removeAllListeners('input');
+    this.nodeRedNode.on('input', (msg) => {
       // msg.payload = node.query;
 
-      msg.query = RED.util.evaluateNodeProperty(config.query, config.queryType, nodeRedNode, msg); 
+      msg.query = this.RED.util.evaluateNodeProperty(this.config.query, this.config.queryType, this.nodeRedNode, msg);
+      
+      this.RED.util.setMessageProperty(msg, this.config.target, 'results from:' + msg.query);
 
-      nodeRedNode.send(msg);
+      this.nodeRedNode.send(msg);
     });
-
-    return this;
   }
 }
 
@@ -46,7 +59,8 @@ function setupNodeRed(RED){
     RED.nodes.createNode(this, config);
 
     this.info = new SoqlQueryNode()
-      .initialize(RED, config, this);
+      .initialize(RED, config, this)
+      .listenToConnection('sfconn');
   });
 }
 
