@@ -39,7 +39,14 @@ class PlatformEventPublisher extends ConnectionReceiver {
       // log('object to create:', JSON.stringify(msg.payload));
       connection.sobject(this.eventObject).create(msg.payload, (err, result) => {
         if (err) {
-          this.nodeRedNode.error(`Error occurred when creating Platform Event:${JSON.stringify(err)}`);
+          this.nodeRedNode.error({
+            'nodeType': 'sf-platform-event-pub',
+            'errTitle': 'Error occurred in response from salesforce to create platform event',
+            'errDetail': {
+              'objectAttempted': this.eventObject,
+              'errEncountered': err
+            }
+          });
           return;
         } else {
           msg.payload = result;
