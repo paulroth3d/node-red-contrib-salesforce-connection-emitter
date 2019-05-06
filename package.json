@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/paulroth3d/node-red-contrib-sf-platform-events.git"
+    "url": "git+https://github.com/paulroth3d/node-red-contrib-salesforce-connection-emitter.git"
   },
   "node-red": {
     "nodes": {
@@ -28,9 +28,9 @@
   "author": "Paul Roth <proth@salesforce.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/paulroth3d/node-red-contrib-sf-platform-events/issues"
+    "url": "https://github.com/paulroth3d/node-red-contrib-salesforce-connection-emitter/issues"
   },
-  "homepage": "https://github.com/paulroth3d/node-red-contrib-sf-platform-events#readme",
+  "homepage": "https://github.com/paulroth3d/node-red-contrib-salesforce-connection-emitter#readme",
   "devDependencies": {
     "eslint": "^5.16.0",
     "eslint-plugin-html": "^5.0.3",
