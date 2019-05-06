@@ -17,7 +17,8 @@
     "nodes": {
       "sf-platform-event-sub": "nodes/platformEvents/sf-platform-event-sub.js",
       "sf-platform-event-pub": "nodes/platformEvents/sf-platform-event-pub.js",
-      "sf-connection-emitter": "nodes/connection/sf-connection-emitter.js"
+      "sf-connection-emitter": "nodes/connection/sf-connection-emitter.js",
+      "sf-soql-query": "nodes/explorer/sf-soql-query.js"
     }
   },
   "keywords": [
