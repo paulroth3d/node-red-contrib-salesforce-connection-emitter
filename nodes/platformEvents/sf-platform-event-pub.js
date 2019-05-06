@@ -38,10 +38,9 @@ class PlatformEventPublisher extends ConnectionReceiver {
     this.nodeRedNode.on('input', (msg) => {
       // log('object to create:', JSON.stringify(msg.payload));
       connection.sobject(this.eventObject).create(msg.payload, (err, result) => {
-        if (err || !result.success) {
-          msg.error = err;
-          msg.return = result;
-          this.nodeRedNode.send(msg);
+        if (err) {
+          this.nodeRedNode.error(`Error occurred when creating Platform Event:${JSON.stringify(err)}`);
+          return;
         } else {
           msg.payload = result;
           this.nodeRedNode.send(msg);
