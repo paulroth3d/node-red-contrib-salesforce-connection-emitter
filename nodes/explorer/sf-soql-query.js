@@ -42,7 +42,6 @@ class SoqlQueryNode extends ConnectionReceiver {
       // msg.payload = node.query;
 
       msg.query = this.RED.util.evaluateNodeProperty(this.config.query, this.config.queryType, this.nodeRedNode, msg);
-      
       this.RED.util.setMessageProperty(msg, this.config.target, 'results from:' + msg.query);
 
       this.nodeRedNode.send(msg);
