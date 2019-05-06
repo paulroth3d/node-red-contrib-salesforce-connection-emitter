@@ -1,7 +1,7 @@
 {
-  "name": "node-red-contrib-sf-platform-events",
+  "name": "node-red-contrib-salesforce-connection-emitter",
   "version": "0.0.1",
-  "description": "Simple way to resilliantly access Salesforce Platform events using oauth, configuration nodes and environment variables.",
+  "description": "A set of Node Red commands that allows nodes to better connect to salesforce (using environment variables, connection pools and config nodes)",
   "main": "index.js",
   "scripts": {
     "test": "node node_modules/mocha/bin/mocha --config .mocharc.json \"test/**/*_spec.js\" --exit",

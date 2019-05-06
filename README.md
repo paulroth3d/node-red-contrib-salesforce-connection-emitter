@@ -1,6 +1,17 @@
 # Overview
 
-The goal is to allow for simple use of Platform Events within Node-Red.
+A set of Node Red commands that allows nodes to better connect to salesforce (using environment variables, connection pools and config nodes).
+
+Many of the connections we have seen for Salesforce rely on creating a configuration node to store the credentials.  This is then used by the various other nodes to connect to salesforce - each with their own connection.
+
+We would instead like to ensure the following:
+
+* Credentials are secured using best practices
+  * While explicitly stating credentials to the config / resulting JSON is sill allowed, environment variables are now also supported. (Providing greater reusability, support for heroku and security)
+* Connections are established at the Connection Credential and emitted to those dependent.
+  * Child nodes can get notified of the current connection, when it is disconnected or request it be reset through events.
+* Support for ES6 Classes and subclassing
+  * By providing classes that can be extended, listening for the events can become quite simple.
 
 # Further
 
