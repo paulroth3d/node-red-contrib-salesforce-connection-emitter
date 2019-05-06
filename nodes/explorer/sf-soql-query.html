@@ -1,19 +1,36 @@
 <script type="text/x-red" data-template-name="sf-soql-query">
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
-        <input type="text" id="node-input-name" placeholder="Name">
+        <input type="text" id="node-input-name" placeholder="Name" />
+    </div>
+    <div class="form-row">
+        <label for="node-input-query"><i class="fa fa-tag"></i> Query</label>
+        <input type="text" id="node-input-query" style="width:70%" />
+        <input type="hidden" id="node-input-queryType" placeholder="" />
     </div>
 </script>
+<!--
+    For more on typedInput, please see:
+    https://nodered.org/docs/api/ui/typedInput/
+    For an example on how to use typed input, please see:
+    https://discourse.nodered.org/t/typedinput-widget/6894
+ -->
 <script type="text/x-red" data-help-name="sf-soql-query">
     <div>
         <a class="node-info-header expanded" href="#"><i class="fa fa-angle-right"></i>Inputs</a>
         <dl class="message-properties">
-        <dt>
-            Name<span class="property-type">node</span>
-        </dt>
-        <dd>
-            Label of the node shown in the editor.
-        </dd>
+            <dt>
+                Name<span class="property-type">string</span>
+            </dt>
+            <dd>
+                Label of the node shown in the editor.
+            </dd>
+            <dt>
+                Query<span class="property-type">multi</span>
+            </dt>
+            <dd>
+                Where should we find the query to provide
+            </dd>
         </dl>
     </div>
 </script>
@@ -22,7 +39,15 @@
         category: 'Salesforce',
         color: '#C0DEED',
         defaults: {
-            name: { value: '' }
+            name: { value: '' },
+            query: {
+                value: '',
+                required: true,
+                validate: RED.validators.typedInput('queryType')
+            },
+            queryType: {
+                value: 'msg'
+            }
         },
         inputs: 1,
         outputs: 1,
@@ -34,6 +59,13 @@
         },
         labelStyle: function(){
             return this.name?'':'node_label_italic';
+        },
+        oneditprepare: function(){
+            $('#node-input-query').typedInput({
+                default: 'msg',
+                typeField: $('#node-input-queryType'),
+                types: ['msg', 'global', 'str', 'env']
+            });
         }
     });
 </script>

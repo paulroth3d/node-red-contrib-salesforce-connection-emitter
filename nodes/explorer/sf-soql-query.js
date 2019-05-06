@@ -25,8 +25,10 @@ class SoqlQueryNode {
     this.name = nodeRedNode.name;
 
     //-- handle events on the nodeRedNode
-    nodeRedNode.on('input', function(msg){
+    nodeRedNode.on('input', (msg) => {
       // msg.payload = node.query;
+
+      msg.query = RED.util.evaluateNodeProperty(config.query, config.queryType, nodeRedNode, msg); 
 
       nodeRedNode.send(msg);
     });
@@ -43,12 +45,8 @@ function setupNodeRed(RED){
   RED.nodes.registerType('sf-soql-query', function(config){
     RED.nodes.createNode(this, config);
 
-    //-- capture information from the config
-    this.name = config.name;
-
     this.info = new SoqlQueryNode()
-      .initialize(RED, config, this)
-      .listenToConnection('sfconn');
+      .initialize(RED, config, this);
   });
 }
 
