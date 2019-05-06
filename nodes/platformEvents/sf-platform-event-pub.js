@@ -34,6 +34,7 @@ class PlatformEventPublisher extends ConnectionReceiver {
   handleNewConnection(connection){
     super.handleNewConnection(connection);
 
+    this.nodeRedNode.removeAllListeners('input');
     this.nodeRedNode.on('input', (msg) => {
       // log('object to create:', JSON.stringify(msg.payload));
       connection.sobject(this.eventObject).create(msg.payload, (err, result) => {
