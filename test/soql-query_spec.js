@@ -16,17 +16,41 @@ const helper = require('node-red-node-test-helper');
 const RED = require('node-red');
 
 //-- mocks / spies / etc
-RED_MOCK.nodes.getNode = sinon.stub();
-
 const connectionEmitter = new EventEmitter();
-const CONNECTION_MOCK = {};
+const CONNECTION_MOCK = {
+  //-- note: null is the error argument, the object is the result argument
+  query: sinon.stub().callsArgWith(1, null, {
+    totalSize: 1,
+    records: [
+      {}
+    ]
+  })
+};
 
-RED_MOCK.nodes.getNode.withArgs('sfconn-id').returns({
+RED.nodes.getNode.withArgs('sfconn-id').returns({
   info: {
     connection: CONNECTION_MOCK,
     emitter: connectionEmitter
   }
 });
+
+/*
+RED.nodes.getNode.withArgs('sfconn-id').callsArgWith(1, null, {
+  info: {
+    connection: CONNECTION_MOCK,
+    emitter: connectionEmitter
+  }
+});
+*/
+
+/*
+RED.nodes.getNode.withArgs('sfconn-id').callArgWith(1, null, {
+  info: {
+    connection: CONNECTION_MOCK,
+    emitter: connectionEmitter
+  }
+});
+*/
 
 const CONFIG_MOCK = {
   sfconn: 'sfconn-id',
@@ -66,7 +90,7 @@ describe('soql-query', () => {
   it('can set status', () => {
     const testPromise = new Promise((resolve, reject) => {
       const soqlQuery = new SoqlQueryNode();
-      soqlQuery.initialize(RED_MOCK, CONFIG_MOCK, NODE_MOCK);
+      soqlQuery.initialize(RED, CONFIG_MOCK, NODE_MOCK);
       soqlQuery.setStatus(soqlQuery.STATUS_CONNECTED);
       resolve();
     });
@@ -76,7 +100,7 @@ describe('soql-query', () => {
   it('can listen for incoming connection and events', () => {
     const testPromise = new Promise((resolve, reject) => {
       const soqlQuery = new SoqlQueryNode();
-      soqlQuery.initialize(RED_MOCK, CONFIG_MOCK, NODE_MOCK);
+      soqlQuery.initialize(RED, CONFIG_MOCK, NODE_MOCK);
       soqlQuery.listenToConnection('sfconn');
 
       NODE_MOCK.emit('input', {
@@ -85,14 +109,17 @@ describe('soql-query', () => {
         }
       });
 
+      assert(CONNECTION_MOCK.query.calledOnce, 'connection mock must have been called');
+      
       assert(NODE_MOCK.send.calledOnce, 'send should only be called once');
       const callArgs = NODE_MOCK.send.lastCall.args[0];
+      // log(`callArgs:${JSON.stringify(callArgs)}`);
       assert.notEqual(callArgs.payload.result, null, 'call results must be set');
 
       resolve();
     });
     return testPromise;
-  })
+  });
 
   /*
   //-- currently failing saying that n1 is undefined.
