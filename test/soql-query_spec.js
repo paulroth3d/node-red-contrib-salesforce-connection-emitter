@@ -19,38 +19,23 @@ const RED = require('node-red');
 const connectionEmitter = new EventEmitter();
 const CONNECTION_MOCK = {
   //-- note: null is the error argument, the object is the result argument
-  query: sinon.stub().callsArgWith(1, null, {
+  query: sinon.stub()
+};
+
+CONNECTION_MOCK.query.withArgs('select * from Account')
+  .callsArgWith(1, null, {
     totalSize: 1,
     records: [
       {}
     ]
-  })
-};
+  });
 
-RED.nodes.getNode.withArgs('sfconn-id').returns({
+RED.nodes.getNode = sinon.stub().withArgs('sfconn-id').returns({
   info: {
     connection: CONNECTION_MOCK,
     emitter: connectionEmitter
   }
 });
-
-/*
-RED.nodes.getNode.withArgs('sfconn-id').callsArgWith(1, null, {
-  info: {
-    connection: CONNECTION_MOCK,
-    emitter: connectionEmitter
-  }
-});
-*/
-
-/*
-RED.nodes.getNode.withArgs('sfconn-id').callArgWith(1, null, {
-  info: {
-    connection: CONNECTION_MOCK,
-    emitter: connectionEmitter
-  }
-});
-*/
 
 const CONFIG_MOCK = {
   sfconn: 'sfconn-id',
@@ -110,7 +95,8 @@ describe('soql-query', () => {
       });
 
       assert(CONNECTION_MOCK.query.calledOnce, 'connection mock must have been called');
-      
+      //-- we match the results to the query up above
+      // log(CONNECTION_MOCK.query.lastCall.args[0]);
       assert(NODE_MOCK.send.calledOnce, 'send should only be called once');
       const callArgs = NODE_MOCK.send.lastCall.args[0];
       // log(`callArgs:${JSON.stringify(callArgs)}`);
@@ -131,7 +117,7 @@ describe('soql-query', () => {
       {id:'n2', type:'sf-connection-emitter', host:'SF_HOST', username:'SF_USERNAME', password:'SF_PASSWORD', token:'SF_TOKEN'}
     ];
     const testPromise = new Promise((resolve, reject) => {
-      helper.load(soqlQueryNode, flow, () => {
+      helper.load([connectionEmitter, SoqlQueryNode], flow, () => {
         try {
           const n1 = helper.getNode('n1');
           assert.notEqual(n1, null, 'n1 should not be null');
