@@ -19,16 +19,30 @@ const RED = require('node-red');
 const connectionEmitter = new EventEmitter();
 const CONNECTION_MOCK = {
   //-- note: null is the error argument, the object is the result argument
-  query: sinon.stub()
+  query: sinon.stub(),
+  queryMore: sinon.stub()
+};
+
+const queryFinished = {
+  done: true,
+  totalSize: 1,
+  records: [
+    {}
+  ]
+};
+const queryNotFinished = {
+  done: false,
+  totalSize: 1,
+  records: [
+    {}
+  ]
 };
 
 CONNECTION_MOCK.query.withArgs('select * from Account')
-  .callsArgWith(1, null, {
-    totalSize: 1,
-    records: [
-      {}
-    ]
-  });
+  .callsArgWith(1, null, queryFinished);
+CONNECTION_MOCK.query.withArgs('select * from Account order by id')
+  .callsArgWith(1, null, queryNotFinished);
+CONNECTION_MOCK.queryMore.callsArgWith(1, null, queryFinished);
 
 RED.nodes.getNode = sinon.stub().withArgs('sfconn-id').returns({
   info: {
@@ -63,6 +77,7 @@ describe('soql-query', () => {
     // helper.stopServer(done);
 
     NODE_MOCK.send.resetHistory();
+    CONNECTION_MOCK.query.resetHistory();
 
     done();
   });
@@ -91,6 +106,31 @@ describe('soql-query', () => {
       NODE_MOCK.emit('input', {
         payload: {
           query: 'select * from Account'
+        }
+      });
+
+      assert(CONNECTION_MOCK.query.calledOnce, 'connection mock must have been called');
+      //-- we match the results to the query up above
+      // log(CONNECTION_MOCK.query.lastCall.args[0]);
+      assert(NODE_MOCK.send.calledOnce, 'send should only be called once');
+      const callArgs = NODE_MOCK.send.lastCall.args[0];
+      // log(`callArgs:${JSON.stringify(callArgs)}`);
+      assert.notEqual(callArgs.payload.result, null, 'call results must be set');
+
+      resolve();
+    });
+    return testPromise;
+  });
+
+  it('can listen for incoming connection and events with query more', () => {
+    const testPromise = new Promise((resolve, reject) => {
+      const soqlQuery = new SoqlQueryNode();
+      soqlQuery.initialize(RED, CONFIG_MOCK, NODE_MOCK);
+      soqlQuery.listenToConnection('sfconn');
+
+      NODE_MOCK.emit('input', {
+        payload: {
+          query: 'select * from Account order by id'
         }
       });
 

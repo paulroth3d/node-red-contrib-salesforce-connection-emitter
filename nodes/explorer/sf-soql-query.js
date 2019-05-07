@@ -43,21 +43,31 @@ class SoqlQueryNode extends ConnectionReceiver {
 
       let queryToRun = this.RED.util.evaluateNodeProperty(this.config.query, this.config.queryType, this.nodeRedNode, msg);
       // this.RED.util.setMessageProperty(msg, this.config.target, 'results from:' + msg.query);
+      let totalRecords = [];
 
-      //-- @TODO: promisify
-      connection.query(queryToRun, (err, result) => {
+      //-- callback used for both query / queryMore
+      const queryCallback = (err, result) => {
         if (err) {
           this.nodeRedNode.error(err);
           return;
         }
 
-        //-- @TODO: queryMore
+        //-- combine to a set of all records retrieved...
+        totalRecords = [...totalRecords, ...result.records];
 
-        this.RED.util.setMessageProperty(msg, this.config.target, result);
-        // console.log("total : " + result.totalSize);
-        // console.log("fetched : " + result.records.length);
-        this.nodeRedNode.send(msg);
-      });
+        if (!result.done){
+          connection.queryMore(result.nextRecordsUrl, queryCallback);
+        } else {
+          result.records = totalRecords;
+          this.RED.util.setMessageProperty(msg, this.config.target, result);
+          // console.log("total : " + result.totalSize);
+          // console.log("fetched : " + result.records.length);
+          this.nodeRedNode.send(msg);
+        }
+      };
+
+      //-- @TODO: promisify
+      connection.query(queryToRun, queryCallback);
     });
   }
 }
