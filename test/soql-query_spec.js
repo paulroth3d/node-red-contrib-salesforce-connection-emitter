@@ -8,7 +8,7 @@ const sinon = require('sinon');
 const EventEmitter = require('events').EventEmitter;
 
 // const connectionEmitter = require('../nodes/connection/sf-connection-emitter');
-const SoqlQueryNode = require('../nodes/explorer/sf-soql-query').infoClass;
+const SoqlQueryNode = require('../nodes/query/sf-soql-query').infoClass;
 
 //-- helper for node red
 const helper = require('node-red-node-test-helper');
@@ -151,7 +151,7 @@ describe('soql-query', () => {
   //-- currently failing saying that n1 is undefined.
   //-- for more information, please visit:
   //-- https://discourse.nodered.org/t/unit-testing-with-config-nodes/10863
-  it('should load/explorer/sf-soql-query', () => {
+  it('should load/query/sf-soql-query', () => {
     const flow = [
       {id:'n1', type:'sf-soql-query', name:'Custom_Name', sfconn:'n2'},
       {id:'n2', type:'sf-connection-emitter', host:'SF_HOST', username:'SF_USERNAME', password:'SF_PASSWORD', token:'SF_TOKEN'}
