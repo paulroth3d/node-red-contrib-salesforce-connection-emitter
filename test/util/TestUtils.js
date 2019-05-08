@@ -14,14 +14,12 @@ const EventEmitter = require('events').EventEmitter;
  * @returns {RED} - a node red mock
  */
 function createNodeRedMock(connectionConfigId, connectionConfigMock){
-  try {
+  
+  //-- revert if the method is already stubbed
+  if (RED.nodes.getNode.revert){
     RED.nodes.getNode.revert();
-  } catch(err){} // eslint-disable-line
+  }
 
-  try {
-  RED.nodes.getNode.restore();
-  RED.nodes.getNode = null;
-  } catch(err){}
   RED.nodes.getNode = sinon.stub();
   RED.nodes.getNode.withArgs(connectionConfigId).returns(connectionConfigMock);
 
