@@ -24,8 +24,9 @@ When other nodes specify their type as `sf-connection-emitter`, then a drop-down
 Each configuration manages the connection to salesforce, and emits events to those listening when:
 
 * (newConnection) - a connection is established
-* (logout) - the connection has been disconnected
+* (connectionLost) - the connection has been disconnected
 * (refresh) - the connection should be restarted (logout and re-established)
+* (logout) - the connection should be closed
 
 For nodes that subclass the [connection.SfConnectionReceiver](./nodes/connection/sf-connection-receiver) - this is all handled for you, simply overload the following methods:
 

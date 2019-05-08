@@ -79,8 +79,8 @@ class SfConnectionReceiver {
       this.handleNewConnection(connection);
     });
 
-    this.connectionEmitter.on('logout', (connection) => {
-      this.handleLogout(connection);
+    this.connectionEmitter.on('connectionLost', (connection) => {
+      this.handleConnectionLost(connection);
     });
 
     return this;
@@ -100,12 +100,21 @@ class SfConnectionReceiver {
     }
   }
 
+  /**
+   * Handle when the connection is established
+   * @param {import('jsforce').Connection} connection - connection that was lost
+   */
   handleNewConnection(connection){
     this.connection = connection;
     this.setStatus(STATUS_CONNECTED);
   }
 
-  handleLogout(connection){
+  /**
+   * Handle when the connection is lost
+   * <p>Likely this isn't as needed as much as handling new connections</p>
+   * @param {import('jsforce').Connection} connection - connection that was lost
+   */
+  handleConnectionLost(connection){ // eslint-disable-line
     this.connection = null;
   }
 

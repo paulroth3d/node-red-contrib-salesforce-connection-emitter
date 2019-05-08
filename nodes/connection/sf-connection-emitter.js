@@ -6,7 +6,7 @@
  * </p>
  * @event newConnection - a new connection has been established / re-established
  * @event refresh - request to refresh the connection
- * @event logout - the connection has been logged out.
+ * @event connectionLost - the connection has been logged out.
  */
 
 require('../Types');
@@ -57,15 +57,7 @@ class ConnectionEmitter extends EventEmitter {
 
     // Nodes are closed when a new flow is deployed.
 		nodeRedModule.on('close', function(done){
-			if (this.connection){
-				this.connection.logout(() => {
-          this.emit('logout', this.connection);
-          this.connection = null;
-					return done();
-				});
-			}else{
-				return done();
-			}
+      this.emit('logout', done);
 		});
 
     return this;
@@ -100,7 +92,7 @@ class ConnectionEmitter extends EventEmitter {
     this.on('refresh', () => {
 
       if (this.connection){
-        this.emit('logout');
+        this.emit('connectionLost');
       }
       
       let host = this.host;
@@ -149,11 +141,39 @@ class ConnectionEmitter extends EventEmitter {
       }
     });
 
-    //-- @TODO: logout
+    this.on('logout', (done) => {
+			if (this.connection){
+				this.connection.logout(() => {
+          this.emit('connectionLost', this.connection);
+          this.connection = null;
+					return done();
+				});
+			}else{
+				return done();
+			}
+    });
 
     this.emit('refresh');
   }
 }
+
+/**
+ * Refresh the connection
+ * @event SfConnectionEmitter#refresh
+ * @type {object}
+ */
+/**
+ * Signifies a new connection has been established
+ * @event SfConnectionEmitter#newConnection
+ * @type {object}
+ * @property {import('jsforce').Connection} connection - the new connection
+ */
+/**
+ * Signifies the current connection has been lost.
+ * @event SfConnectionEmitter#connectionLost
+ * @type {object}
+ * @property {import('jsforce').Connection} connection - the old connection
+ */
 
 function setupNodeRed(RED){
   RED.nodes.registerType('sf-connection-emitter', function(config){
