@@ -1,9 +1,4 @@
-/**
- * Component that represents a single connection to Salesforce.
- * <p>
- * This include the credentials - or the environment variables that store them,
- * along with the current connection to salesforce and an emitter to listen for connection changes.
- * </p>
+/*
  * @event newConnection - a new connection has been established / re-established
  * @event refresh - request to refresh the connection
  * @event connectionLost - the connection has been logged out.
@@ -18,26 +13,51 @@ const sinon = require('sinon');
 const jsforce = require('jsforce');
 
 /**
- * Node Red Configuration Node that manages a connection to salesforce.
- * @class SfConnectionEmitter
- * @property {RED} RED - the Node Red Server
- * @property {RED_CONFIG} config - Configuration
- * @property {NODE_RED_NODE} nodeRedModule - Node Red Node
- * @property {JsForceConnection} connection - current jsforce connection
+ * @description Component that represents a single connection to Salesforce.
+ * This include the credentials - or the environment variables that store them,
+ * along with the current connection to salesforce and an emitter to listen for connection changes.
+ * @class 
  */
 class ConnectionEmitter extends EventEmitter {
 
   /**
-   * 
+   * Request to refresh the connection (logout/re-establish)
+   * @event SfConnectionEmitter#refresh
+   * @type {object}
+   */
+  /**
+   * Request to disconnect from the connection
+   * @event SfConnectionEmitter#logout
+   * @type {object}
+   */
+  /**
+   * Signifies a new connection has been established
+   * @event SfConnectionEmitter#newConnection
+   * @type {object}
+   * @property {import('jsforce').Connection} connection - the new connection
+   */
+  /**
+   * Signifies the current connection has been lost.
+   * @event SfConnectionEmitter#connectionLost
+   * @type {object}
+   * @property {import('jsforce').Connection} connection - the old connection
+   */
+
+  /**
+   * Initializes the node instance.
    * @param {RED} RED - The Node Red Server
    * @param {RED_CONFIG} config - Configuration
    * @param {NODE_RED_NODE} nodeRedModule - Current Node Red Node
    */
   initialize(RED, config, nodeRedModule){
+    /** @property {import('node-red')} RED - the Node Red server */
     this.RED = RED;
+    /** @property {RED_CONFIG} config - the configuration sent for initializing this node */
     this.config = config;
+    /** @property {NODE_RED_NODE} nodeRedModule - the node red node that is running in the flow */
     this.nodeRedModule = nodeRedModule;
 
+    /** @property {import('jsforce').Connection} connection - the current JS Force connection */
     this.connection = null;
 
     this.host = config.host;
@@ -82,7 +102,7 @@ class ConnectionEmitter extends EventEmitter {
 
   /**
    * Initialize the emitter to be used when communicating the connections.
-   * @return {node.EventEmitter}
+   * @return {void} -
    */
   resetEmitter(){
     
@@ -158,23 +178,10 @@ class ConnectionEmitter extends EventEmitter {
 }
 
 /**
- * Refresh the connection
- * @event SfConnectionEmitter#refresh
- * @type {object}
+ * Necessary function as node red uses the literal function for export
+ * (with no support for AMD/ES6 modules)
+ * @param {import('node-red')} RED - the node red server
  */
-/**
- * Signifies a new connection has been established
- * @event SfConnectionEmitter#newConnection
- * @type {object}
- * @property {import('jsforce').Connection} connection - the new connection
- */
-/**
- * Signifies the current connection has been lost.
- * @event SfConnectionEmitter#connectionLost
- * @type {object}
- * @property {import('jsforce').Connection} connection - the old connection
- */
-
 function setupNodeRed(RED){
   RED.nodes.registerType('sf-connection-emitter', function(config){
     RED.nodes.createNode(this, config);
