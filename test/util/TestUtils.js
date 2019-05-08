@@ -44,7 +44,7 @@ function createConnectionEmitterMock(jsForceConnection){
 
 /**
  * Creates a mock JS Force Connection
- * @returns {JsForceConnection} - jsForce Connection
+ * @returns {import('jsforce').Connection} - jsForce Connection
  */
 function createJsForceConnectionMock(){
   const result = {

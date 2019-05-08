@@ -32,6 +32,9 @@
   },
   "homepage": "https://github.com/paulroth3d/node-red-contrib-salesforce-connection-emitter#readme",
   "devDependencies": {
+    "@types/events": "^3.0.0",
+    "@types/jsforce": "^1.9.5",
+    "@types/node-red": "^0.20.0",
     "chai": "^4.2.0",
     "eslint": "^5.16.0",
     "eslint-plugin-html": "^5.0.3",
