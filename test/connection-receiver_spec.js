@@ -12,7 +12,7 @@ const mockUtils = require('./util/TestUtils');
 const CONNECTION_EMITTER_MOCK = mockUtils.createConnectionEmitterMock();
 // const CONNECTION_MOCK = CONNECTION_EMITTER_MOCK.info.connection;
 
-const RED_MOCK = mockUtils.createNodeRedMock('some-connection', CONNECTION_EMITTER_MOCK);
+let RED_MOCK; //-- to be reset each test, because each test should have its own unique getNode stub
 
 const CONFIG_MOCK = {
   sfconn: 'some-connection'
@@ -31,6 +31,9 @@ describe('connection-receiver', () => {
     // sinon.stub(jsforce.Connection.prototype, 'login').callArgWith(2,null,{});
 
     NODE_MOCK.status.resetHistory();
+
+    //-- reset the red mock for each test - not before all tests
+    RED_MOCK = mockUtils.createNodeRedMock('some-connection', CONNECTION_EMITTER_MOCK);
   });
   
   it('should be running mocha tests', (done) => {

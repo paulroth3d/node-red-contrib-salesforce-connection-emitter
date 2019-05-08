@@ -18,7 +18,12 @@ function createNodeRedMock(connectionConfigId, connectionConfigMock){
     RED.nodes.getNode.revert();
   } catch(err){} // eslint-disable-line
 
-  RED.nodes.getNode = sinon.stub().withArgs(connectionConfigId).returns(connectionConfigMock);
+  try {
+  RED.nodes.getNode.restore();
+  RED.nodes.getNode = null;
+  } catch(err){}
+  RED.nodes.getNode = sinon.stub();
+  RED.nodes.getNode.withArgs(connectionConfigId).returns(connectionConfigMock);
 
   return RED;
 }
@@ -27,15 +32,44 @@ function createNodeRedMock(connectionConfigId, connectionConfigMock){
  * Creates a mock for the salesforce connection config
  * @returns {object} - 
  */
-function createConnectionEmitterMock(){
+function createConnectionEmitterMock(jsForceConnection){
+  if (!jsForceConnection){
+    jsForceConnection = createJsForceConnectionMock();
+  }
   const config = {
     info: new EventEmitter()
   };
-  config.info.connection = {
-    query: sinon.stub(),
-    queryMore: sinon.stub()
-  };
+  config.info.connection = jsForceConnection;
+
   return config;
+}
+
+/**
+ * Creates a mock JS Force Connection
+ * @returns {JsForceConnection} - jsForce Connection
+ */
+function createJsForceConnectionMock(){
+  return {
+    query: sinon.stub(),
+    queryMore: sinon.stub(),
+    streaming: {
+      createClient: sinon.stub().returns({
+        subscribe: sinon.stub()
+      })
+    },
+    sobject: sinon.stub()
+  };
+}
+
+/**
+ * Creates a mock streaming client for jsforce
+ * @returns {object}
+ */
+function createJsForceStreamingClient(){
+  const result = {};
+  result.subscribe = sinon.stub();
+
+  return result;
 }
 
 /**
@@ -71,6 +105,8 @@ function createNodeRedNodeMock(){
 module.exports = {
   createNodeRedMock,
   createConnectionEmitterMock,
+  createJsForceConnectionMock,
+  createJsForceStreamingClient,
   createSoqlQueryResponse,
   createNodeRedNodeMock
 };

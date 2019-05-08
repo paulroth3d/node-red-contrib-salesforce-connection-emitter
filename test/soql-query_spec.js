@@ -28,7 +28,7 @@ CONNECTION_MOCK.query.withArgs('select * from Account order by id')
 CONNECTION_MOCK.queryMore.callsArgWith(1, null, queryFinishedResponse);
 
 //-- mock node red
-const RED_MOCK = mockUtils.createNodeRedMock('sfconn-id', CONNECTION_CONFIG_MOCK);
+let RED_MOCK; //-- to be reset each test, because each test should have its own unique getNode stub
 
 //-- mock the config passed to the node
 const CONFIG_MOCK = {
@@ -48,6 +48,8 @@ describe('soql-query', () => {
 
   beforeEach(function (done) {
     // helper.startServer(done);
+    //-- reset the red mock to ensure the getNode is specific to this test
+    RED_MOCK = mockUtils.createNodeRedMock('sfconn-id', CONNECTION_CONFIG_MOCK);
     done();
   });
 
