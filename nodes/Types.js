@@ -73,7 +73,6 @@
 /**
  * One of our es6 classes that work with node red
  * @typedef NodeRedNodeClass
- * @property {string} cuca - cuca
  */
 
 /**

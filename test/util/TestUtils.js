@@ -14,7 +14,7 @@ const EventEmitter = require('events').EventEmitter;
  * @returns {RED} - a node red mock
  */
 function createNodeRedMock(connectionConfigId, connectionConfigMock){
-  
+
   //-- revert if the method is already stubbed
   if (RED.nodes.getNode.revert){
     RED.nodes.getNode.revert();
@@ -28,7 +28,7 @@ function createNodeRedMock(connectionConfigId, connectionConfigMock){
 
 /**
  * Creates a mock for the salesforce connection config
- * @returns {object} - 
+ * @returns {NodeRedClassNode} - A connection emitter node red node
  */
 function createConnectionEmitterMock(jsForceConnection){
   if (!jsForceConnection){
@@ -47,7 +47,7 @@ function createConnectionEmitterMock(jsForceConnection){
  * @returns {JsForceConnection} - jsForce Connection
  */
 function createJsForceConnectionMock(){
-  return {
+  const result = {
     query: sinon.stub(),
     queryMore: sinon.stub(),
     streaming: {
@@ -55,8 +55,13 @@ function createJsForceConnectionMock(){
         subscribe: sinon.stub()
       })
     },
-    sobject: sinon.stub()
+    sobject: sinon.stub(),
+    sobject_create: sinon.stub()
   };
+  result.sobject.returns({
+    create: result.sobject_create
+  });
+  return result;
 }
 
 /**
