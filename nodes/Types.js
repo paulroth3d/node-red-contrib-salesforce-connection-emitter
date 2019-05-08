@@ -47,10 +47,10 @@
 
 /**
  * Custom Emitter
- * @typedef CustomEmitterType
+ * @typedef _CustomEmitterType
  * @property {() => string} doSomething - does something
  * 
- * @typedef {EventEmitter & CustomEmitterType} CustomEmitter
+ * @typedef {EventEmitter & _CustomEmitterType} CustomEmitter
  */
 
 /**
@@ -63,12 +63,27 @@
 
 /**
  * A Node Red Node
- * @typedef NODE_RED_NODE_TYPE
+ * @typedef _NODE_RED_NODE_TYPE
  * @property {(NODE_RED_STATUS) => void} status - Sets the status on the node
  * @property {(object) => boolean} send - Sends a message to the next node via wires.
  * 
- * @typedef {EventEmitter & NODE_RED_NODE_TYPE} NODE_RED_NODE
+ * @typedef {EventEmitter & _NODE_RED_NODE_TYPE} NODE_RED_NODE
  */
+
+/**
+ * One of our es6 classes that work with node red
+ * @typedef NodeRedNodeClass
+ * @property {string} cuca - cuca
+ */
+
+/**
+ * Our custom node red nodes with es6 classes
+ * @typedef _NodeRedClassNodeType
+ * @property {object} info - The es6 class instance backing the node
+ * @property {class} infoClass - The es6 class that has the logic for the node.
+ * 
+ * @typedef {_NodeRedClassNodeType & NODE_RED_NODE} NodeRedClassNode
+ **/
 
 //-- @TODO: use @types/events
 //-- https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/events/index.d.ts

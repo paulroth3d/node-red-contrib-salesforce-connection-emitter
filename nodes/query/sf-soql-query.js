@@ -2,8 +2,15 @@ const log = require('fancy-log'); // eslint-disable-line no-unused-vars
 
 const ConnectionReceiver = require('../connection/sf-connection-receiver');
 
+require('../Types');
+
 /**
  * Node Red Node to run a SOQL Query
+ * @class SfSoqlQuery
+ * @extends NodeRedNodeClass
+ * @property {RED} RED - Node Red instance
+ * @property {RED_CONFIG} config - configuration sent for the node
+ * @property {NODE_RED_NODE} nodeRedNode
  */
 class SoqlQueryNode extends ConnectionReceiver {
 
@@ -16,9 +23,9 @@ class SoqlQueryNode extends ConnectionReceiver {
   
   /**
    * Initialize the node red node
-   * @param {object} RED - Node Red framework
-   * @param {object} config - configuration for module from the node red editor
-   * @param {object} nodeRedNode - the node red instance
+   * @param {RED} RED - Node Red framework
+   * @param {RED_CONFIG} config - configuration for module from the node red editor
+   * @param {NODE_RED_NODE} nodeRedNode - the node red instance
    */
   initialize(RED, config, nodeRedNode) {
     super.initialize(RED, config, nodeRedNode);

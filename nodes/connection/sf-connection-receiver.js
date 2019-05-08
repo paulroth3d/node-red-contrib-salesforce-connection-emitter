@@ -68,7 +68,7 @@ class SfConnectionReceiver {
 
     const connectionKey = this.config[connectionPropName];
     this.connectionEmitter = this.RED.nodes.getNode(connectionKey).info;
-    
+
     if (this.connectionEmitter.connection){
       this.handleNewConnection(this.connectionEmitter.connection);
     } else {

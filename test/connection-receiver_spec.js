@@ -2,29 +2,23 @@
 
 const log = require('fancy-log'); // eslint-disable-line no-unused-vars
 
-const assert = require('assert');
-
-const EventEmitter = require('events').EventEmitter;
-const sinon = require('sinon');
-
-//-- include for mocks later
-const jsforce = require('jsforce'); // eslint-disable-line no-unused-vars
+const {assert,expect} = require('chai'); // eslint-disable-line no-unused-vars
 
 const SfConnectionReceiver = require('../nodes/connection/sf-connection-receiver');
 // const SfConnectionEmitter = require('../nodes/connection/sf-connection-emitter');
 
-const RED_MOCK = {
-  nodes: {
-    getNode: () => sinon.stub()
-  }
-};
+const mockUtils = require('./util/TestUtils');
+
+const CONNECTION_EMITTER_MOCK = mockUtils.createConnectionEmitterMock();
+// const CONNECTION_MOCK = CONNECTION_EMITTER_MOCK.info.connection;
+
+const RED_MOCK = mockUtils.createNodeRedMock('some-connection', CONNECTION_EMITTER_MOCK);
 
 const CONFIG_MOCK = {
   sfconn: 'some-connection'
 };
 
-const NODE_MOCK = new EventEmitter();
-NODE_MOCK.status = sinon.spy();
+const NODE_MOCK = mockUtils.createNodeRedNodeMock();
 
 /**
  * Ensure that the mocha tests run
@@ -37,8 +31,6 @@ describe('connection-receiver', () => {
     // sinon.stub(jsforce.Connection.prototype, 'login').callArgWith(2,null,{});
 
     NODE_MOCK.status.resetHistory();
-
-    RED_MOCK.nodes.getNode = sinon.stub();
   });
   
   it('should be running mocha tests', (done) => {
@@ -76,13 +68,6 @@ describe('connection-receiver', () => {
     const receiver = new SfConnectionReceiver();
     receiver.initialize(RED_MOCK, CONFIG_MOCK, NODE_MOCK);
 
-    RED_MOCK.nodes.getNode.returns({
-      info: {
-        connection: {},
-        emitter: new EventEmitter()
-      }
-    });
-
     receiver.listenToConnection('sfconn');
 
     let connectedArg = NODE_MOCK.status.args[0][0];
@@ -94,21 +79,13 @@ describe('connection-receiver', () => {
     const receiver = new SfConnectionReceiver();
     receiver.initialize(RED_MOCK, CONFIG_MOCK, NODE_MOCK);
 
-    const connectionEmitter = {
-      info: {
-        connection: null,
-        emitter: new EventEmitter()
-      }
-    };
-
-    RED_MOCK.nodes.getNode.returns(connectionEmitter);
     receiver.listenToConnection('sfconn');
-
-    NODE_MOCK.status.resetHistory();
     
-    connectionEmitter.info.emitter.emit('newConnection', {});
+    CONNECTION_EMITTER_MOCK.info.emit('newConnection', {});
+    assert(NODE_MOCK.status.called,'node_mock.status should be called');
 
-    let connectedArg = NODE_MOCK.status.args[0][0];
+    let connectedArg = NODE_MOCK.status.lastCall.args[0];
+    // log(`connectedArg:${JSON.stringify(connectedArg)}`);
     assert.equal(connectedArg.text, 'connected');
     done();
   });
