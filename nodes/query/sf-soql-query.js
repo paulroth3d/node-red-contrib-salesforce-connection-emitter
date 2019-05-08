@@ -71,8 +71,7 @@ class SoqlQueryNode extends ConnectionReceiver {
           this.nodeRedNode.send(msg);
         }
       };
-
-      //-- @TODO: promisify
+      
       connection.query(queryToRun, queryCallback);
     });
   }
