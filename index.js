@@ -5,14 +5,14 @@
 
 module.exports = {
   connection : {
-    SfConnectionEmitter: require('./nodes/connection/sf-connection-emitter'),
+    SfConnectionEmitter: require('./nodes/connection/sf-connection-emitter').infoClass,
     SfConnectionReceiver: require('./nodes/connection/sf-connection-receiver')
   },
   query: {
-    SfSoqlQuery: require('./nodes/query/sf-soql-query')
+    SfSoqlQuery: require('./nodes/query/sf-soql-query').infoClass
   },
   platformEvents: {
-    SfPlatformEventPublisher: require('./nodes/platformEvents/sf-platform-event-pub'),
-    SfPlatformEventSubscriber: require('./nodes/platformEvents/sf-platform-event-sub')
+    SfPlatformEventPublisher: require('./nodes/platformEvents/sf-platform-event-pub').infoClass,
+    SfPlatformEventSubscriber: require('./nodes/platformEvents/sf-platform-event-sub').infoClass
   }
 };

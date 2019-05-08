@@ -4,18 +4,33 @@
 
 const log = require('fancy-log');
 
+//-- support typedefs
+require('../Types');
+
+// require('./sf-connection-emitter');
+
 const STATUS_CONNECTED = 'CONNECTED';
 const STATUS_DISCONNECTED = 'DISCONNECTED';
 
+/**
+ * Base Class for Node Red Nodes that should utilize the SfConnectionEmitter.
+ * @class SfConnectionReceiver
+ * @property {} connectionEmitter - the current connection
+ * @property {RED} RED - the node red server
+ * @property {RED_CONFIG} config - the configuration for the node
+ * @property {NODE_RED_NODE} nodeRedNode - the node red node this will be working with.
+ */
 class SfConnectionReceiver {
 
   /**
-   * 
-   * @param {any} RED - Node Red Instance
-   * @param {any} config - config module passed from node red
-   * @param {any} nodeRedNode - the current node red node
+   * Initialize the Receiver
+   * @param {RED} RED - Node Red Instance
+   * @param {RED_CONFIG} config - config module passed from node red
+   * @param {NODE_RED_NODE} nodeRedNode - the current node red node
+   * @param {CustomEmitter} emitter - the current connection
+   * @returns {SfConnectionReceiver} -
    */
-  initialize(RED, config, nodeRedNode){
+  initialize(RED, config, nodeRedNode, emitter){
     this.RED = RED;
     this.config = config;
     this.nodeRedNode = nodeRedNode;
@@ -33,6 +48,10 @@ class SfConnectionReceiver {
     return this;
   }
 
+  /**
+   * Given the name of the config property, this listens to the Sf
+   * @param {string} connectionPropName - the name of the connection
+   */
   listenToConnection(connectionPropName){
     if (!this.RED){
       log.error('RED not found'); return;
@@ -56,8 +75,12 @@ class SfConnectionReceiver {
       this.setStatus(STATUS_DISCONNECTED);
     }
 
-    this.connectionEmitter.emitter.on('newConnection', (connection) => {
+    this.connectionEmitter.on('newConnection', (connection) => {
       this.handleNewConnection(connection);
+    });
+
+    this.connectionEmitter.on('logout', (connection) => {
+      this.handleLogout(connection);
     });
 
     return this;
@@ -80,6 +103,10 @@ class SfConnectionReceiver {
   handleNewConnection(connection){
     this.connection = connection;
     this.setStatus(STATUS_CONNECTED);
+  }
+
+  handleLogout(connection){
+    this.connection = null;
   }
 
   /**

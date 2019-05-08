@@ -22,7 +22,6 @@ class SoqlQueryNode extends ConnectionReceiver {
    */
   initialize(RED, config, nodeRedNode) {
     super.initialize(RED, config, nodeRedNode);
-
     this.RED = RED;
     this.config = config;
     this.nodeRedNode = nodeRedNode;
@@ -39,8 +38,7 @@ class SoqlQueryNode extends ConnectionReceiver {
     //-- handle events on the nodeRedNode
     this.nodeRedNode.removeAllListeners('input');
     this.nodeRedNode.on('input', (msg) => {
-      // msg.payload = node.query;
-
+      
       let queryToRun = this.RED.util.evaluateNodeProperty(this.config.query, this.config.queryType, this.nodeRedNode, msg);
       // this.RED.util.setMessageProperty(msg, this.config.target, 'results from:' + msg.query);
       let totalRecords = [];
@@ -59,9 +57,10 @@ class SoqlQueryNode extends ConnectionReceiver {
           connection.queryMore(result.nextRecordsUrl, queryCallback);
         } else {
           result.records = totalRecords;
+          result.totalSize = result.records.length;
+
           this.RED.util.setMessageProperty(msg, this.config.target, result);
-          // console.log("total : " + result.totalSize);
-          // console.log("fetched : " + result.records.length);
+
           this.nodeRedNode.send(msg);
         }
       };

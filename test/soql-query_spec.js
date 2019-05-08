@@ -2,64 +2,43 @@
 
 //-- logger
 const log = require('fancy-log'); // eslint-disable-line
-//-- asserts for mocha tests / others are also available.
-const assert = require('assert');
-const sinon = require('sinon');
-const EventEmitter = require('events').EventEmitter;
+
+const {assert, expect} = require('chai'); // eslint-disable-line no-unused-vars
 
 // const connectionEmitter = require('../nodes/connection/sf-connection-emitter');
 const SoqlQueryNode = require('../nodes/query/sf-soql-query').infoClass;
 
 //-- helper for node red
+//-- can't get this to work yet
 const helper = require('node-red-node-test-helper');
 
-const RED = require('node-red');
+const mockUtils = require('./util/TestUtils');
 
 //-- mocks / spies / etc
-const connectionEmitter = new EventEmitter();
-const CONNECTION_MOCK = {
-  //-- note: null is the error argument, the object is the result argument
-  query: sinon.stub(),
-  queryMore: sinon.stub()
-};
+const queryFinishedResponse = mockUtils.createSoqlQueryResponse([{id:1,type:'Account'},{id:2,type:'Account'}], true);
+const queryNotFinishedResponse = mockUtils.createSoqlQueryResponse([{id:3,type:'Account'}], false);
 
-const queryFinished = {
-  done: true,
-  totalSize: 1,
-  records: [
-    {}
-  ]
-};
-const queryNotFinished = {
-  done: false,
-  totalSize: 1,
-  records: [
-    {}
-  ]
-};
-
+//-- mock connection
+const CONNECTION_CONFIG_MOCK = mockUtils.createConnectionEmitterMock();
+const CONNECTION_MOCK = CONNECTION_CONFIG_MOCK.info.connection;
 CONNECTION_MOCK.query.withArgs('select * from Account')
-  .callsArgWith(1, null, queryFinished);
+  .callsArgWith(1, null, queryFinishedResponse);
 CONNECTION_MOCK.query.withArgs('select * from Account order by id')
-  .callsArgWith(1, null, queryNotFinished);
-CONNECTION_MOCK.queryMore.callsArgWith(1, null, queryFinished);
+  .callsArgWith(1, null, queryNotFinishedResponse);
+CONNECTION_MOCK.queryMore.callsArgWith(1, null, queryFinishedResponse);
 
-RED.nodes.getNode = sinon.stub().withArgs('sfconn-id').returns({
-  info: {
-    connection: CONNECTION_MOCK,
-    emitter: connectionEmitter
-  }
-});
+//-- mock node red
+const RED_MOCK = mockUtils.createNodeRedMock('sfconn-id', CONNECTION_CONFIG_MOCK);
 
+//-- mock the config passed to the node
 const CONFIG_MOCK = {
   sfconn: 'sfconn-id',
   query: 'payload.query', queryType: 'msg',
   target: 'payload.result'
 };
 
-const NODE_MOCK = new EventEmitter();
-NODE_MOCK.status = sinon.spy();
-NODE_MOCK.send = sinon.spy();
+//-- mock the node red node it will work with
+const NODE_MOCK = mockUtils.createNodeRedNodeMock();
 
 //-- init helper
 
@@ -90,7 +69,7 @@ describe('soql-query', () => {
   it('can set status', () => {
     const testPromise = new Promise((resolve, reject) => {
       const soqlQuery = new SoqlQueryNode();
-      soqlQuery.initialize(RED, CONFIG_MOCK, NODE_MOCK);
+      soqlQuery.initialize(RED_MOCK, CONFIG_MOCK, NODE_MOCK);
       soqlQuery.setStatus(soqlQuery.STATUS_CONNECTED);
       resolve();
     });
@@ -100,7 +79,7 @@ describe('soql-query', () => {
   it('can listen for incoming connection and events', () => {
     const testPromise = new Promise((resolve, reject) => {
       const soqlQuery = new SoqlQueryNode();
-      soqlQuery.initialize(RED, CONFIG_MOCK, NODE_MOCK);
+      soqlQuery.initialize(RED_MOCK, CONFIG_MOCK, NODE_MOCK);
       soqlQuery.listenToConnection('sfconn');
 
       NODE_MOCK.emit('input', {
@@ -114,8 +93,12 @@ describe('soql-query', () => {
       // log(CONNECTION_MOCK.query.lastCall.args[0]);
       assert(NODE_MOCK.send.calledOnce, 'send should only be called once');
       const callArgs = NODE_MOCK.send.lastCall.args[0];
+      const sendResults = callArgs.payload.result;
       // log(`callArgs:${JSON.stringify(callArgs)}`);
-      assert.notEqual(callArgs.payload.result, null, 'call results must be set');
+      // log(`callResult:${JSON.stringify(sendResults)}`);
+      assert.notEqual(sendResults, null, 'call results must be set');
+      assert.equal(sendResults.records.length, 2, 'should have two results');
+      assert.equal(sendResults.totalSize, 2, 'should have two results');
 
       resolve();
     });
@@ -125,7 +108,7 @@ describe('soql-query', () => {
   it('can listen for incoming connection and events with query more', () => {
     const testPromise = new Promise((resolve, reject) => {
       const soqlQuery = new SoqlQueryNode();
-      soqlQuery.initialize(RED, CONFIG_MOCK, NODE_MOCK);
+      soqlQuery.initialize(RED_MOCK, CONFIG_MOCK, NODE_MOCK);
       soqlQuery.listenToConnection('sfconn');
 
       NODE_MOCK.emit('input', {
@@ -142,13 +125,20 @@ describe('soql-query', () => {
       // log(`callArgs:${JSON.stringify(callArgs)}`);
       assert.notEqual(callArgs.payload.result, null, 'call results must be set');
 
+      //-- note this is the property defined in the config node: CONFIG_MOCK.target
+      const sendResults = callArgs.payload.result;
+      assert.notEqual(sendResults, null, 'should have results returned');
+      assert.equal(sendResults.records.length, 3, 'should have 3 results');
+      assert.equal(sendResults.totalSize, 3, 'totalSize should have 3 results');
+
       resolve();
     });
     return testPromise;
   });
 
   /*
-  //-- currently failing saying that n1 is undefined.
+  //-- currently failing saying that n1 is undefined
+  //-- unable to get test working with the nodeJsTestHelper...
   //-- for more information, please visit:
   //-- https://discourse.nodered.org/t/unit-testing-with-config-nodes/10863
   it('should load/query/sf-soql-query', () => {

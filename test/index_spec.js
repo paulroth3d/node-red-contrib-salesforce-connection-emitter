@@ -25,13 +25,23 @@ describe('index', () => {
     return testPromise;
   });
 
-  it('can load Receiver from require:', () => {
-    const testPromise = new Promise((resolve, reject) => {
-      const c = EmitterNodes.connection.SfConnectionEmitter;
-      assert.notEqual(c, null, 'class should be there');
-      resolve();
-    });
-    return testPromise;
+  it('can be destructured at multiple levels', (done) => {
+    const emitters = require('../index');
+    assert.notEqual(emitters, null, 'emitters should be found');
+    const {connection: {SfConnectionReceiver, SfConnectionEmitter}} = require('../index');
+    const receiver = new SfConnectionReceiver();
+    assert.notEqual(receiver, null, 'receiver should be created');
+    assert.notEqual(SfConnectionEmitter, null, 'SfConnectionEmitter should also be found');
+    done();
+  });
+
+  it('can destructure the info class', (done) => {
+    const {connection: {SfConnectionEmitter}} = require('../index');
+    //-- alternatively
+    //const emitter = new SfConnectionEmitter.infoClass(RED);
+    const emitter = new SfConnectionEmitter();
+    assert.notEqual(emitter, null, 'emitter should be created');
+    done();
   });
 });
 

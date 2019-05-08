@@ -9,21 +9,36 @@
  * @event logout - the connection has been logged out.
  */
 
+require('../Types');
+
 const log = require('fancy-log');
 const EventEmitter = require('events').EventEmitter;
 const sinon = require('sinon');
 
 const jsforce = require('jsforce');
 
-class ConnectionEmitter {
+/**
+ * Node Red Configuration Node that manages a connection to salesforce.
+ * @class SfConnectionEmitter
+ * @property {RED} RED - the Node Red Server
+ * @property {RED_CONFIG} config - Configuration
+ * @property {NODE_RED_NODE} nodeRedModule - Node Red Node
+ * @property {JsForceConnection} connection - current jsforce connection
+ */
+class ConnectionEmitter extends EventEmitter {
 
+  /**
+   * 
+   * @param {RED} RED - The Node Red Server
+   * @param {RED_CONFIG} config - Configuration
+   * @param {NODE_RED_NODE} nodeRedModule - Current Node Red Node
+   */
   initialize(RED, config, nodeRedModule){
     this.RED = RED;
     this.config = config;
     this.nodeRedModule = nodeRedModule;
 
     this.connection = null;
-    this.emitter = null;
 
     this.host = config.host;
     this.username = config.username;
@@ -44,6 +59,8 @@ class ConnectionEmitter {
 		nodeRedModule.on('close', function(done){
 			if (this.connection){
 				this.connection.logout(() => {
+          this.emit('logout', this.connection);
+          this.connection = null;
 					return done();
 				});
 			}else{
@@ -76,12 +93,15 @@ class ConnectionEmitter {
    * @return {node.EventEmitter}
    */
   resetEmitter(){
-    this.emitter = new EventEmitter();
     
     //-- initialize the connection to null initially.
     this.connection = null;
 
-    this.emitter.on('refresh', () => {
+    this.on('refresh', () => {
+
+      if (this.connection){
+        this.emit('logout');
+      }
       
       let host = this.host;
       if (!host){
@@ -110,7 +130,7 @@ class ConnectionEmitter {
             create: sinon.mock()
           })
         };
-        this.emitter.emit('newConnection', this.connection);
+        this.emit('newConnection', this.connection);
        return;
       } else {
         let conn = new jsforce.Connection({
@@ -124,12 +144,14 @@ class ConnectionEmitter {
   
           this.connection = conn;
           log('connection successful for user:' + this.username);
-          this.emitter.emit('newConnection', this.connection);
+          this.emit('newConnection', this.connection);
         });
       }
     });
 
-    this.emitter.emit('refresh');
+    //-- @TODO: logout
+
+    this.emit('refresh');
   }
 }
 
