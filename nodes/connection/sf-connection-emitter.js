@@ -76,7 +76,7 @@ class ConnectionEmitter extends EventEmitter {
     this.resetEmitter();
 
     // Nodes are closed when a new flow is deployed.
-		nodeRedModule.on('close', function(done){
+		nodeRedModule.on('close', (done) => {
       this.emit('logout', done);
 		});
 
