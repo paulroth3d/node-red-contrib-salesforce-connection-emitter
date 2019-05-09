@@ -117,8 +117,8 @@ class PlatformEventSubscriber extends ConnectionReceiver {
     });
 
     const fayeClient = connection.streaming.createClient(
-      // [this.loggerExtension, this.replayExtension, this.authFailureExtension]
-      [this.loggerExtension]
+      [this.loggerExtension, this.replayExtension, this.authFailureExtension]
+      // [this.loggerExtension]
     );
 
     this.subscription = fayeClient.subscribe(this.channel, (data) => {
