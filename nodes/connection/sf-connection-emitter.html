@@ -1,19 +1,23 @@
 <script type="text/x-red" data-template-name="sf-connection-emitter">
     <div class="form-row">
         <label for="node-config-input-host"><i class="fa fa-tag"></i> Host</label>
-        <input type="text" id="node-config-input-host">
+        <input type="text" id="node-config-input-host" style="width:70%">
+        <input type="hidden" id="node-config-input-hostType" placeholder="">
     </div>
     <div class="form-row">
         <label for="node-config-input-username"><i class="fa fa-tag"></i> Username</label>
-        <input type="text" id="node-config-input-username" />
+        <input type="text" id="node-config-input-username" style="width:70%" />
+        <input type="hidden" id="node-config-input-usernameType" placeholder="" />
     </div>
     <div class="form-row">
         <label for="node-config-input-password"><i class="fa fa-tag"></i> Password</label>
-        <input type="text" id="node-config-input-password" />
+        <input type="text" id="node-config-input-password" style="width:70%" />
+        <input type="hidden" id="node-config-input-passwordType" placeholder="" />
     </div>
     <div class="form-row">
         <label for="node-config-input-token"><i class="fa fa-tag"></i> Security Token</label>
-        <input type="text" id="node-config-input-token" />
+        <input type="text" id="node-config-input-token" style="width:70%" />
+        <input type="hidden" id="node-config-input-tokenType" placeholder="" />
     </div>
 </script>
 <script type="text/x-red" data-help-name="sf-connection-emitter">
@@ -21,28 +25,28 @@
         <a class="node-info-header expanded" href="#"><i class="fa fa-angle-right"></i>Inputs</a>
         <dl class="message-properties">
             <dt>
-                Host <span class="property-type">string</span>
+                Host <span class="propertyType">string</span>
             </dt>
             <dd>
                 The domain to connect to Salesforce through. Ex: test.salesforce.com or login.salesforce.com, etc. <br />
                 (OR - the Environment variable that contains the value)
             </dd>
             <dt>
-                Username <span class="property-type">string</span>
+                Username <span class="propertyType">string</span>
             </dt>
             <dd>
                 Username to use when connecting to Salesforce <br />
                 (OR - the Environment variable that contains the value)
             </dd>
             <dt>
-                Password <span class="property-type">string</span>
+                Password <span class="propertyType">string</span>
             </dt>
             <dd>
                 Password for the user. <br />
                 (OR - the Environment variable that contains the value)
             </dd>
             <dt>
-                Token <span class="property-type">node</span>
+                Token <span class="propertyType">node</span>
             </dt>
             <dd>
                 Security Token for the user. <br />
@@ -57,12 +61,38 @@
         color: '#C0DEED',
         defaults: {
             host: { value: 'test.salesforce.com', required:true },
+            hostType: { value:'env' },
             username: { required:true },
+            usernameType: { value:'env' },
             password: { required:true },
-            token: { required:false }
+            passwordType: { value:'env' },
+            token: { required:false },
+            tokenType: { value:'env' }
         },
         label: function(){
             return this.username;
+        },
+        oneditprepare: function(){
+            $('#node-config-input-host').typedInput({
+                default: 'env',
+                typeField: $('#node-config-input-hostType'),
+                types: ['global', 'str', 'env']
+            });
+            $('#node-config-input-username').typedInput({
+                default: 'env',
+                typeField: $('#node-config-input-usernameType'),
+                types: ['global', 'str', 'env']
+            });
+            $('#node-config-input-password').typedInput({
+                default: 'env',
+                typeField: $('#node-config-input-passwordType'),
+                types: ['global', 'str', 'env']
+            });
+            $('#node-config-input-token').typedInput({
+                default: 'env',
+                typeField: $('#node-config-input-tokenType'),
+                types: ['global', 'str', 'env']
+            });
         }, 
         credentials: {
             host: { type:'text' },

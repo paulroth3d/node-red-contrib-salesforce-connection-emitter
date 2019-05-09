@@ -12,12 +12,22 @@ const jsforce = require('jsforce');
 
 const sinon = require('sinon');
 
-const config = {
+const testUtils = require('./util/TestUtils');
+
+let RED_MOCK; //-- to be reset each test, because each test may have different nodes
+
+const CONFIG_MOCK = {
   host: 'https://test.salesforce.com',
+  hostType:'str',
   username: 'john@example.com',
+  usernameType:'str',
   password: 'password',
-  token: 'TOKEN'
+  passwordType:'str',
+  token: 'TOKEN',
+  tokenType:'str'
 };
+
+const NODE_MOCK = testUtils.createNodeRedNodeMock();
 
 /**
  * Ensure that the mocha tests run
@@ -29,7 +39,7 @@ describe('connection-emmitter', () => {
   });
 });
 
-describe('NodeClass', () => {
+describe('Connection-Emitter', () => {
 
   beforeEach( () => {
     //-- stub out jsforce connection
@@ -37,6 +47,8 @@ describe('NodeClass', () => {
       jsforce.Connection.prototype.login.restore();
     } catch(err){} // eslint-disable-line no-empty
     sinon.stub(jsforce.Connection.prototype,'login').callsArgWith(2,null, {});
+
+    RED_MOCK = testUtils.createNodeRedMock(null,null);
   });
 
   it('Should create without throwing exceptions', (done) => {
@@ -50,11 +62,11 @@ describe('NodeClass', () => {
 
   it('Should initialize with the credentials passed to it', done => {
     const connectionEmitter = new ConnectionEmitter();
-    connectionEmitter.initialize({}, config, {on:function(){}});
+    connectionEmitter.initialize(RED_MOCK, CONFIG_MOCK, NODE_MOCK);
 
     assert.equal(connectionEmitter.host, 'https://test.salesforce.com');
-    assert.equal(connectionEmitter.username, config.username);
-    assert.equal(connectionEmitter.password, config.password + config.token);
+    assert.equal(connectionEmitter.username, CONFIG_MOCK.username);
+    assert.equal(connectionEmitter.password, CONFIG_MOCK.password + CONFIG_MOCK.token);
 
     done();
   });
@@ -76,7 +88,7 @@ describe('NodeClass', () => {
 
   it('can mock resetEmitter', (done) => {
     const connectionEmitter = new ConnectionEmitter();
-    connectionEmitter.initialize({}, config, {on:function(){}});
+    connectionEmitter.initialize(RED_MOCK, CONFIG_MOCK, {on:function(){}});
     connectionEmitter.resetEmitter();
 
     assert.equal(connectionEmitter.host, 'https://test.salesforce.com');

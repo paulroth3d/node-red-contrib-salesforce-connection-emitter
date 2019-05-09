@@ -47,36 +47,43 @@ class ConnectionEmitter extends EventEmitter {
    * Initializes the node instance.
    * @param {RED} RED - The Node Red Server
    * @param {RED_CONFIG} config - Configuration
-   * @param {NODE_RED_NODE} nodeRedModule - Current Node Red Node
+   * @param {NODE_RED_NODE} NodeRedNode - Current Node Red Node
    */
-  initialize(RED, config, nodeRedModule){
+  initialize(RED, config, nodeRedNode){
     /** @property {import('node-red')} RED - the Node Red server */
     this.RED = RED;
     /** @property {RED_CONFIG} config - the configuration sent for initializing this node */
     this.config = config;
-    /** @property {NODE_RED_NODE} nodeRedModule - the node red node that is running in the flow */
-    this.nodeRedModule = nodeRedModule;
+    /** @property {NODE_RED_NODE} NodeRedNode - the node red node that is running in the flow */
+    this.NodeRedNode = nodeRedNode;
 
     /** @property {import('jsforce').Connection} connection - the current JS Force connection */
     this.connection = null;
 
-    this.host = config.host;
-    this.username = config.username;
-    this.password = config.password;
-    if (config.token) {
-      this.password += config.token;
+    // log(`host:${config.host}, hostType:${config.hostType}`);
+    // log(`username:${config.username}, usernameType:${config.usernameType}`);
+    // log(`password:${config.password}, passwordType:${config.passwordType}`);
+
+    let host = RED.util.evaluateNodeProperty(config.host, config.hostType, nodeRedNode);
+    let username = RED.util.evaluateNodeProperty(config.username, config.usernameType, nodeRedNode);
+    let password = RED.util.evaluateNodeProperty(config.password, config.passwordType, nodeRedNode);
+    let token = RED.util.evaluateNodeProperty(config.token, config.tokenType, nodeRedNode);
+
+    this.host = host;
+    this.username = username;
+    this.password = password;
+    if (token) {
+      this.password += token;
     }
 
     // log(`host:${this.host}`);
     // log(`username:${this.username}`);
     // log(`password:${this.password}`);
 
-    this.expandConfigEnvironmentVariables();
-
     this.resetEmitter();
 
     // Nodes are closed when a new flow is deployed.
-		nodeRedModule.on('close', (done) => {
+		nodeRedNode.on('close', (done) => {
       this.emit('logout', done);
 		});
 
