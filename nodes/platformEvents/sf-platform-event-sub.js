@@ -2,6 +2,8 @@ const log = require('fancy-log'); // eslint-disable-line no-unused-vars
 
 const ConnectionReceiver = require('../connection/sf-connection-receiver');
 
+const jsforce = require('jsforce');
+
 /**
  * Node Red Node that subscribes to platform events and dispatches event messages.
  */
@@ -11,18 +13,21 @@ class PlatformEventSubscriber extends ConnectionReceiver {
   constructor(){
     super();
 
+    /** @property {any} subscription - the current subscription to the stream */
     this.subscription = null;
 
     //-- define the logger extension
-    this.loggerExtension = {
-      incoming: (message, callback) => {
-        //log('extension messageReceived', message);
-        if (message.channel === this.channel && message.data && message.data.event && message.data.event.replayId ){
-          this.replayId = parseInt(message.data.event.replayId, 10);
-        }
-        callback(message);
-      }
-    };
+    /** Simple extension to capture the last replayId captured */
+    this.loggerExtension = null;
+    /** Extension to provide durability for working with platform events */
+    this.replayExtension = null;
+    /** Extension for capturing when the subscription fails */
+    this.authFailureExtension = null;
+
+    /** @property {string} channel - the channel to listen for streams on **/
+    this.channel = null;
+    /** @property {integer} replayId - The replayId to start listening to platform events from */
+    this.replayId = -1;
   }
 
   /**
@@ -34,10 +39,46 @@ class PlatformEventSubscriber extends ConnectionReceiver {
   initialize(RED, config, nodeRedNode){
     super.initialize(RED, config, nodeRedNode);
 
-    this.channel = `/event/${this.eventobject}`;
-    this.replayId = nodeRedNode.replayId;
+    //-- capture information from the config
+    this.channel = `/event/${config.eventobject}`;
+
+    let preservedReplayId = this.getNodeContext('replayId');
+    let configReplayId = parseInt(config.replayid, 10) || null;
+    let forceConfigReplayId = config.replayid && config.replayid.includes('!');
+
+    this.replayId = -1;
+    if (preservedReplayId){
+      this.replayId = preservedReplayId;
+    }
+    if (configReplayId && (!preservedReplayId || forceConfigReplayId)){
+      this.replayId = configReplayId;
+    }
+    // log(`flow preserved flowReplayId:${preservedReplayId}, configReplay:${configReplayId}, forceConfig:${forceConfigReplayId?'true':'false'}`);
+    // log(`final replayId:${this.replayId}`);
 
     return this;
+  }
+
+  /**
+   * Retrieves a value in the node context
+   * @see https://nodered.org/docs/creating-nodes/context
+   * @param {string} prop - name of the prop to store
+   */
+  getNodeContext(prop){
+    return this.nodeRedNode.context().get(prop);
+    // return this.nodeRedNode.context().flow.get(prop);
+    // return this.nodeRedNode.context().global.get(prop);
+  }
+  /**
+   * Stores a value in the node context
+   * @see https://nodered.org/docs/creating-nodes/context
+   * @param {string} prop - prop to store
+   * @param {any} val - value to store
+   */
+  setNodeContext(prop, val){
+    this.nodeRedNode.context().set(prop, val);
+    // this.nodeRedNode.context().flow.set(prop, val);
+    // this.nodeRedNode.context().global.set(prop, val);
   }
 
   /**
@@ -51,15 +92,37 @@ class PlatformEventSubscriber extends ConnectionReceiver {
       this.subscription.cancel();
     }
 
-    //-- @TODO, use the connection failure plugin and the durable connection plugin
+    this.loggerExtension = {
+      incoming: (message, callback) => {
+        // log(`message received in logger extension:`, JSON.stringify(message));
+        if (message.channel === this.channel && message.data && message.data.event && message.data.event.replayId ){
+          this.replayId = parseInt(message.data.event.replayId, 10);
+          this.setNodeContext('replayId', this.replayId);
+          this.nodeRedNode.status({fill:"green",shape:"dot",text:`connected[replayId:${this.replayId}]`});
+        } else if (message.channel === '/meta/subscribe' && message.successful === true){
+          this.nodeRedNode.status({fill:"green",shape:"dot",text:`connected[replayId:${this.replayId}]`});
+        }
+        callback(message);
+      }
+    };
 
-    // log('loggerExtension:' + this.loggerExtension);
-    const fayeClient = connection.streaming.createClient([this.loggerExtension]);
-    // const fayeClient = connection.streaming.createClient([this.loggerReplayExtension]);
-    
+    this.replayExtension = new jsforce.StreamingExtension.Replay(this.channel, this.replayId);
+
+    this.authFailureExtension = new jsforce.StreamingExtension.AuthFailure(() => {
+      log('failure occurred when streaming with salesforce.. Requesting reconnect...');
+      if (connection){
+        connection.emit('refresh');
+      }
+    });
+
+    const fayeClient = connection.streaming.createClient(
+      // [this.loggerExtension, this.replayExtension, this.authFailureExtension]
+      [this.loggerExtension]
+    );
+
     this.subscription = fayeClient.subscribe(this.channel, (data) => {
-      // log('topic recieved data', data);
-      // log(`replayId:${this.replayId}`);
+       // log('topic recieved data', data);
+       // log(`replayId:${this.replayId}`);
       this.nodeRedNode.send({payload:data});
     });
   }
@@ -77,10 +140,6 @@ class PlatformEventSubscriber extends ConnectionReceiver {
 function setupNodeRed(RED){
   RED.nodes.registerType('sf-platform-event-sub', function(config){
     RED.nodes.createNode(this, config);
-
-    //-- capture information from the config
-    this.eventobject = config.eventobject;
-    this.replayId = parseInt(config.replayid, 10);
 
     this.info = new PlatformEventSubscriber()
       .initialize(RED, config, this)

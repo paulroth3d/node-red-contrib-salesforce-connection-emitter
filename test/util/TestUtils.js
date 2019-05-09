@@ -102,6 +102,30 @@ function createNodeRedNodeMock(){
   const results = new EventEmitter();
   results.status = sinon.spy();
   results.send = sinon.spy();
+
+  results.context_get = sinon.stub();
+  results.context_set = sinon.stub();
+  results.context_node_get = sinon.stub();
+  results.context_node_set = sinon.stub();
+  results.context_global_get = sinon.stub();
+  results.context_global_set = sinon.stub();
+
+  results.context = sinon.stub().returns({
+    get: results.context_get,
+    set: results.context_set,
+    flow: {
+      get: results.context_node_get,
+      set: results.context_node_set
+    }
+  });
+
+  //-- yay for setting a property to a reserved word...
+  //-- @see https://nodered.org/docs/creating-nodes/context
+  results.context["global"] = {
+    get: results.context_global_get,
+    set: results.context_global_set
+  };
+
   return results;
 }
 

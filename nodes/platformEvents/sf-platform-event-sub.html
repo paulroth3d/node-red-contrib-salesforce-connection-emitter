@@ -36,7 +36,12 @@
                 Replay Id <span class="property-type">integer</span>
             </dt>
             <dd>
-                The Replay Id to start listening to messages from. (-2 to only listen to those moving forward). <a target='_blank' href='https://developer.salesforce.com/docs/atlas.en-us.api_streaming.meta/api_streaming/using_streaming_api_durability.htm'>See here for more information</a>
+                The Replay Id to start listening to messages from. (-1 to only listen to those moving forward). <a target='_blank' href='https://developer.salesforce.com/docs/atlas.en-us.api_streaming.meta/api_streaming/using_streaming_api_durability.htm'>See here for more information</a>
+                <br />
+                <b>NOTE: the replay Id captured is <a href='https://nodered.org/docs/user-guide/context'>preserved for you automatically</a></b>.
+                <br />
+                To force the replay Id, send it with an exclaimation mark / bang at the end:<br />
+                For example: 12!
             </dd>
         </dl>
     </div>

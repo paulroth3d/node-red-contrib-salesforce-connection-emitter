@@ -162,11 +162,11 @@ class ConnectionEmitter extends EventEmitter {
     });
 
     this.on('logout', (done) => {
-			if (this.connection){
-				this.connection.logout(() => {
+      if (this.connection){
+        this.connection.logout(() => {
           this.emit('connectionLost', this.connection);
           this.connection = null;
-					return done();
+          return done();
 				});
 			}else{
 				return done();
