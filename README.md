@@ -15,7 +15,7 @@ We would instead like to ensure the following:
 
 # Nodes
 
-## [connection.SfConnectionEmitter](./nodes/connection/sf-connection-emitter.js)
+## [connection.SfConnectionEmitter](nodes/connection/sf-connection-emitter.js)
 
 **Configuration Node** - used by most (if not all of the other Salesforce commands.
 
@@ -28,7 +28,7 @@ Each configuration manages the connection to salesforce, and emits events to tho
 * (refresh) - the connection should be restarted (logout and re-established)
 * (logout) - request the connection be severed
 
-For nodes that subclass the [connection.SfConnectionReceiver](./nodes/connection/sf-connection-receiver) - this is all handled for you... For more information, [please see that class](./nodes/connection/sf-connection-receiver)
+For nodes that subclass the [connection.SfConnectionReceiver](#connectionsfconnectionreceiver) - this is all handled for you... For more information, [please see that class](nodes/connection/sf-connection-receiver)
 
 ![Screenshot of ConnectionEmitter](docs/images/ConnectionEmitter.jpg)
 
@@ -78,7 +78,7 @@ For nodes that subclass the [connection.SfConnectionReceiver](./nodes/connection
 		<tr>
 			<td>Security Token</td>
 			<td>string</td>
-			<td><a href='https://help.salesforce.com/articleView?id=user_security_token.htm&r=https%3A%2F%2Fwww.google.com%2F&type=5'>Security Token for user</a></td>
+			<td><a href='https://help.salesforce.com/articleView?id=user_security_token.htm&type=5'>Security Token for user</a></td>
 			<td>0abcd</td>
 		</tr>
 	</tbody>
@@ -95,9 +95,9 @@ Each configuration manages the connection to salesforce, and emits events to tho
 * (refresh) - the connection should be restarted (logout and re-established)
 * (logout) - request the connection be severed
 
-For nodes that subclass the [connection.SfConnectionReceiver](./nodes/connection/sf-connection-receiver) - this is all handled for you... For more information, [please see that class](./nodes/connection/sf-connection-receiver)
+For nodes that subclass the [connection.SfConnectionReceiver](#connectionsfconnectionreceiver) - this is all handled for you... For more information, [please see that class](nodes/connection/sf-connection-receiver.js)
 
-## [query.SfSoqlQuery](./nodes/query/sf-soql-query)
+## [query.SfSoqlQuery](nodes/query/sf-soql-query)
 
 Use this node to perform a SOQL query to capture information from Salesforce
 
@@ -140,7 +140,7 @@ Use this node to perform a SOQL query to capture information from Salesforce
 
 ![Screenshot of Soql Query](docs/images/SoqlQuery.jpg)
 
-## [platformEvents.SfPlatformEventSubscriber](./nodes/platformEvents/sf-platform-event-sub)
+## [platformEvents.SfPlatformEventSubscriber](nodes/platformEvents/sf-platform-event-sub)
 
 Use this to listen to <a href='https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_intro.htm'>Salesforce Platform Events</a>
 
@@ -201,7 +201,7 @@ For example: 12!
 
 
 
-## [platformEvents.SfPlatformEventPublisher](./nodes/platformEvents/sf-platform-event-pub)
+## [platformEvents.SfPlatformEventPublisher](nodes/platformEvents/sf-platform-event-pub)
 
 Use this to publish <a href='https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_intro.htm'>Salesforce Platform Events</a>
 
@@ -250,13 +250,13 @@ While the request to use ES6 classes is currently underway within Node-Red modul
 All nodes can be found by importing the module:
 
 * connection
-	* [SfConnectionEmitter](./nodes/connection/sf-connection-emitter.js)
-	* [SfConnectionReceiver](./nodes/connection/sf-connection-receiver)
+	* [SfConnectionEmitter](nodes/connection/sf-connection-emitter.js)
+	* [SfConnectionReceiver](nodes/connection/sf-connection-receiver)
 * query
-	* [SfSoqlQuery](./nodes/query/sf-soql-query)
+	* [SfSoqlQuery](nodes/query/sf-soql-query)
 * platformEvents
-	* [SfPlatformEventPublisher](./nodes/platformEvents/sf-platform-event-pub)
-	* [SfPlatformEventSubscriber](./nodes/platformEvents/sf-platform-event-sub)
+	* [SfPlatformEventPublisher](nodes/platformEvents/sf-platform-event-pub)
+	* [SfPlatformEventSubscriber](nodes/platformEvents/sf-platform-event-sub)
 
 Note that Node-Red gets access to the setupNodeRed function,
 using require(...) directly gives access to the es6 class.
@@ -265,7 +265,7 @@ Also note, although NodeRed does not support TypeScript, care has been taken to 
 
 ![Screenshot of intellisense](docs/images/intellisense.jpg)
 
-## [connection.SfConnectionReceiver](./nodes/connection/sf-connection-receiver)
+## [connection.SfConnectionReceiver](nodes/connection/sf-connection-receiver)
 
 Base Class for many of the other commands.
 
