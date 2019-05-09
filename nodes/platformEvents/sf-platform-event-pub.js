@@ -21,7 +21,7 @@ class PlatformEventPublisher extends ConnectionReceiver {
   initialize(RED, config, nodeRedNode){
     super.initialize(RED, config, nodeRedNode);
 
-    //-- capture information from the config
+    /** Capture the object to publish to */
     this.eventObject = config.eventobject;
 
     return this;
@@ -71,9 +71,6 @@ function setupNodeRed(RED){
     RED.nodes.createNode(this, config);
 
     //-- @TODO: the create node to the class.
-
-    //-- capture information from the config
-    this.eventObject = config.eventobject;
 
     this.info = new PlatformEventPublisher()
       .initialize(RED, config, this)

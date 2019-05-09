@@ -50,9 +50,9 @@ describe('platform-event-publisher', () => {
   });
 
   it('can set connected status', (done) => {
-    const subscriber = new PlatformEventPubClass();
-    subscriber.initialize(RED_MOCK, CONFIG_MOCK, NODE_MOCK);
-    subscriber.setStatus(subscriber.STATUS_CONNECTED);
+    const receiver = new PlatformEventPubClass();
+    receiver.initialize(RED_MOCK, CONFIG_MOCK, NODE_MOCK);
+    receiver.setStatus(receiver.STATUS_CONNECTED);
     let connectedArg = NODE_MOCK.status.args[0][0];
     assert.equal(connectedArg.fill, 'green');
     assert.equal(connectedArg.text, 'connected');
@@ -70,6 +70,7 @@ describe('platform-event-publisher', () => {
     const receiver = new PlatformEventPubClass();
     receiver.initialize(RED_MOCK, CONFIG_MOCK, NODE_MOCK);
     receiver.setStatus(receiver.STATUS_CONNECTED);
+
     let connectedArg = NODE_MOCK.status.lastCall.args[0];
     assert.equal(connectedArg.fill, 'green');
     assert.equal(connectedArg.text, 'connected');

@@ -27,18 +27,24 @@ class SfConnectionReceiver {
    * @param {RED} RED - Node Red Instance
    * @param {RED_CONFIG} config - config module passed from node red
    * @param {NODE_RED_NODE} nodeRedNode - the current node red node
-   * @param {CustomEmitter} emitter - the current connection
    * @returns {SfConnectionReceiver} -
    */
-  initialize(RED, config, nodeRedNode, emitter){
+  initialize(RED, config, nodeRedNode){
+    /** @property {import('node-red')} RED - the Node Red server */
     this.RED = RED;
+    /** @property {RED_CONFIG} config - the configuration sent to this node */
     this.config = config;
+    /** @property {NODE_RED_NODE} nodeRedNode - the Node Red Node instance this class manages */
     this.nodeRedNode = nodeRedNode;
 
+    /** @property {import('./sf-platform-connection-emitter').infoClass} connectionEmitter - the connection emitter this listens to */
     this.connectionEmitter = null;
+    /** @property {import('jsforce').Connection} connection - the current connection to salesforce @deprecated */
     this.connection = null;
 
+    /** @property {string} STATUS_CONNECTED - provide this status to the nodeRedNode.status to mark connected */
     this.STATUS_CONNECTED = STATUS_CONNECTED;
+    /** @property {string} STATUS_DISCONNECTED - provide this status to the nodeRedNode.status to mark disconnected */
     this.STATUS_DISCONNECTED = STATUS_DISCONNECTED;
 
     // nodeRedNode.on('close', (done) => {
