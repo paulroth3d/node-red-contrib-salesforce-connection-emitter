@@ -28,7 +28,7 @@ Each configuration manages the connection to salesforce, and emits events to tho
 * (refresh) - the connection should be restarted (logout and re-established)
 * (logout) - request the connection be severed
 
-For nodes that subclass the [connection.SfConnectionReceiver](#connectionsfconnectionreceiver) - this is all handled for you... For more information, [please see that class](nodes/connection/sf-connection-receiver)
+For nodes that subclass the [connection.SfConnectionReceiver](#connectionsfconnectionreceiver) - this is all handled for you... For more information, [please see that class](nodes/connection/sf-connection-receiver.js)
 
 ![Screenshot of ConnectionEmitter](docs/images/ConnectionEmitter.jpg)
 
@@ -97,7 +97,7 @@ Each configuration manages the connection to salesforce, and emits events to tho
 
 For nodes that subclass the [connection.SfConnectionReceiver](#connectionsfconnectionreceiver) - this is all handled for you... For more information, [please see that class](nodes/connection/sf-connection-receiver.js)
 
-## [query.SfSoqlQuery](nodes/query/sf-soql-query)
+## [query.SfSoqlQuery](nodes/query/sf-soql-query.js)
 
 Use this node to perform a SOQL query to capture information from Salesforce
 
@@ -140,7 +140,7 @@ Use this node to perform a SOQL query to capture information from Salesforce
 
 ![Screenshot of Soql Query](docs/images/SoqlQuery.jpg)
 
-## [platformEvents.SfPlatformEventSubscriber](nodes/platformEvents/sf-platform-event-sub)
+## [platformEvents.SfPlatformEventSubscriber](nodes/platformEvents/sf-platform-event-sub.js)
 
 Use this to listen to <a href='https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_intro.htm'>Salesforce Platform Events</a>
 
@@ -201,7 +201,7 @@ For example: 12!
 
 
 
-## [platformEvents.SfPlatformEventPublisher](nodes/platformEvents/sf-platform-event-pub)
+## [platformEvents.SfPlatformEventPublisher](nodes/platformEvents/sf-platform-event-pub.js)
 
 Use this to publish <a href='https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_intro.htm'>Salesforce Platform Events</a>
 
@@ -251,12 +251,12 @@ All nodes can be found by importing the module:
 
 * connection
 	* [SfConnectionEmitter](nodes/connection/sf-connection-emitter.js)
-	* [SfConnectionReceiver](nodes/connection/sf-connection-receiver)
+	* [SfConnectionReceiver](nodes/connection/sf-connection-receiver.js)
 * query
-	* [SfSoqlQuery](nodes/query/sf-soql-query)
+	* [SfSoqlQuery](nodes/query/sf-soql-query.js)
 * platformEvents
-	* [SfPlatformEventPublisher](nodes/platformEvents/sf-platform-event-pub)
-	* [SfPlatformEventSubscriber](nodes/platformEvents/sf-platform-event-sub)
+	* [SfPlatformEventPublisher](nodes/platformEvents/sf-platform-event-pub.js)
+	* [SfPlatformEventSubscriber](nodes/platformEvents/sf-platform-event-sub.js)
 
 Note that Node-Red gets access to the setupNodeRed function,
 using require(...) directly gives access to the es6 class.
@@ -265,7 +265,7 @@ Also note, although NodeRed does not support TypeScript, care has been taken to 
 
 ![Screenshot of intellisense](docs/images/intellisense.jpg)
 
-## [connection.SfConnectionReceiver](nodes/connection/sf-connection-receiver)
+## [connection.SfConnectionReceiver](nodes/connection/sf-connection-receiver.js)
 
 Base Class for many of the other commands.
 
