@@ -23,7 +23,13 @@
   },
   "keywords": [
     "salesforce",
-    "platform-events"
+    "platform-events",
+    "node-red",
+    "jsforce",
+    "publish",
+    "subscribe",
+    "platform",
+    "event"
   ],
   "author": "Paul Roth <proth@salesforce.com>",
   "license": "MIT",
