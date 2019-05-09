@@ -90,6 +90,7 @@ class PlatformEventSubscriber extends ConnectionReceiver {
 
     if (this.subscription){
       this.subscription.cancel();
+      this.subscription = null;
     }
 
     this.loggerExtension = {
@@ -125,6 +126,13 @@ class PlatformEventSubscriber extends ConnectionReceiver {
        // log(`replayId:${this.replayId}`);
       this.nodeRedNode.send({payload:data});
     });
+  }
+
+  handleConnectionLost(connection){ // eslint-disable-line
+    if (this.subscription){
+      this.subscription.cancel();
+      this.subscription = null;
+    }
   }
 
   //-- use the existing method for now
