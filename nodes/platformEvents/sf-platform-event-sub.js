@@ -83,7 +83,7 @@ class PlatformEventSubscriber extends ConnectionReceiver {
 
   /**
    * Handler for when a new connection has been established
-   * @param {jsforce.connection} connection - updated connection
+   * @param {import('jsforce').Connection} connection - updated connection
    */
   handleNewConnection(connection){
     super.handleNewConnection(connection);
