@@ -1,0 +1,26 @@
+<script type="text/javascript">
+	RED.nodes.registerType('describe-all-objects',{
+		category: 'Exploration Toolkit',
+		color: '#C0DEED',
+		defaults: {
+			name: { value: '' }
+		},
+		inputs: 1,
+		outputs: 1,
+		icon: "db.png",
+		label: function() {
+			return this.name || "Describe All Objects";
+		}
+	});
+</script>
+
+<script type="text/x-red" data-template-name="describe-all-objects">
+	<div class="form-row">
+			<label for="node-input-name"><i class="icon-tag"></i> Name</label>
+			<input type="text" id="node-input-name" placeholder="Name">
+	</div>
+</script>
+
+<script type="text/x-red" data-help-name="describe-all-objects">
+	<p>Describe all objects in a Salesforce org using the Tooling API.</p>
+</script>
