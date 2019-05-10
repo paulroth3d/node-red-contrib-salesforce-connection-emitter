@@ -108,7 +108,7 @@ class SfConnectionReceiver {
 
   /**
    * Handle when the connection is established
-   * @param {import('jsforce').Connection} connection - connection that was lost
+   * @param {import('jsforce').Connection} connection - connection that was opened
    */
   handleNewConnection(connection){
     this.connection = connection;
