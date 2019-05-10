@@ -99,7 +99,7 @@ class SoapQueryProcessor extends AbstractQueryProcessor{
 				this.node.send(this.msg);
 			})
 			.on("error", (err) => {
-				let errorMsg = buildErrorMsg(NODE_NAME, 'The query failed to run.', err);
+				let errorMsg = buildErrorMsg(this.node.name, 'The query failed to run.', err);
 				this.node.status({fill:"red",shape:"dot",text:"failed"});
 				this.node.error(errorMsg, this.msg);
 			})
