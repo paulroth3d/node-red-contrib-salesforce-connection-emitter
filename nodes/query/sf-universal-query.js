@@ -4,6 +4,9 @@ const ConnectionReceiver = require('../connection/sf-connection-receiver');
 
 require('../Types');
 
+
+const SoqlQueryProcessor = require('./queryProcessor/SoqlQueryProcessor');
+const ToolingQueryProcessor = require('./queryProcessor/ToolingQueryProcessor');
 /**
  * Node Red Node that can query SOQL or Tooling APIs from Salesforce
  */
@@ -12,6 +15,11 @@ class SfUniversalQuery extends ConnectionReceiver {
   /** Constructor */
   constructor() {
     super();
+
+    /** Indicates the tooling type */
+    this.PROCESSOR_TYPE_TOOLING = 'tooling';
+    /** Indicates the soql type */
+    this.PROCESSOR_TYPE_SOQL = 'soql';
 
     //-- initialize component properties
   }
@@ -44,6 +52,21 @@ class SfUniversalQuery extends ConnectionReceiver {
   }
 
   /**
+   * Determines the processor to use
+   * @param {string} api - (soql|tooling)
+   */
+  determineQueryProcessor(api){
+    if (api === this.PROCESSOR_TYPE_TOOLING){
+      return new ToolingQueryProcessor();
+    } else if( api === this.PROCESSOR_TYPE_SOQL){
+      return new SoqlQueryProcessor();
+    } else {
+      this.error(`Unknown query processor type:${api}`);
+      return null;
+    }
+  }
+
+  /**
    * Handle when the connection is established
    * @param {import('jsforce').Connection} connection - connection that was opened
    */
@@ -55,9 +78,9 @@ class SfUniversalQuery extends ConnectionReceiver {
    * Handle when the connection is lost
    * @param {import('jsforce').Connection} connection - connection that was lost
    */
-  handleConnectionLost(connection){
-    super.handleConnectionLost(connection);
-  }
+  // handleConnectionLost(connection){
+  //   super.handleConnectionLost(connection);
+  // }
 
 }
 
