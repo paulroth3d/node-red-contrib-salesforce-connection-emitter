@@ -3,17 +3,74 @@
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name" />
     </div>
+    <div class="form-row">
+        <label for="node-input-sfconn"><i class="fa fa-tag"></i> Connection</label>
+        <input type="sf-connection-emitter" id="node-input-sfconn">
+    </div>
+	<div class="form-row">
+        <label for="node-input-api"><i class="fa fa-tag"></i> Query</label>
+		<select id="node-input-api" style="width:180px;">
+			<option value="soql">SOQL</option>
+			<option value="tooling">Tooling</option>
+		</select>
+	</div>
+	<div class="form-row">
+		<label for="node-input-describeAll"><i class="icon-tag"></i> Describe All</label>
+		<input type="checkbox" id="node-input-describeAll">
+	</div>
+    <div class="form-row">
+        <label for="node-input-objectName"><i class="fa fa-tag"></i> Object Name</label>
+        <input type="text" id="node-input-objectName" style="width:70%" />
+        <input type="hidden" id="node-input-objectNameType" placeholder="" />
+    </div>
+    <div class="form-row">
+        <label for="node-input-target"><i class="fa fa-tag"></i> Target</label>
+        <input type="text" id="node-input-target" />
+    </div>
 </script>
 <script type="text/x-red" data-help-name="sf-universal-describe">
     <div>
         <a class="node-info-header expanded" href="#"><i class="fa fa-angle-right"></i>Inputs</a>
         <dl class="message-properties">
-        <dt>
-            Name<span class="property-type">node</span>
-        </dt>
-        <dd>
-            Label of the node shown in the editor.
-        </dd>
+            <dt>
+                Name<span class="property-type">node</span>
+            </dt>
+            <dd>
+                Label of the node shown in the editor.
+            </dd>
+            <dd>
+                Label of the node shown in the editor.
+            </dd>
+            <dt>
+                Connection <span class="property-type">node</span>
+            </dt>
+            <dd>
+                Which API to use (SOQL/TOOLING)
+            </dd>
+            <dt>
+                API<span class="property-type">string</span>
+            </dt>
+            <dd>
+                Salesforce Connection to use.
+            </dd>
+            <dt>
+                Describe All<span class="property-type">checkbox</span>
+            </dt>
+            <dd>
+                Whether to describe everything (checked) or a specific object (unchecked)
+            </dd>
+            <dt>
+                Object Name<span class="property-type">string</span>
+            </dt>
+            <dd>
+                Object to describe
+            </dd>
+            <dt>
+                Target<span class="property-type">property path</span>
+            </dt>
+            <dd>
+                Where should we place the results from the query in the message?
+            </dd>
         </dl>
     </div>
 </script>
@@ -22,7 +79,36 @@
         category: 'Salesforce',
         color: '#C0DEED',
         defaults: {
-            name: { value: '' }
+            name: { value: '' },
+            sfconn: { type:'sf-connection-emitter' },
+            api: {
+                value: 'soql',
+                validate: function(val){
+                    return val === 'soql' || val === 'tooling';
+                }
+            },
+			describeAll: { value: true},
+            objectName: {
+                value: '',
+                required: true,
+                validate: function(val){
+                    debugger;
+                    if (this.describeAll){
+                        return !val;
+                    } else if (!val){
+                        return false;
+                    } else {
+                        return RED.validators.typedInput('objectNameType')(val);
+                    }
+                }
+            },
+            objectNameType: {
+                value: 'msg'
+            },
+            target: {
+                value: '',
+                required: true
+            }
         },
         inputs: 1,
         outputs: 1,
@@ -34,6 +120,13 @@
         },
         labelStyle: function(){
             return this.name?'':'node_label_italic';
+        },
+        oneditprepare: function(){
+            $('#node-input-objectName').typedInput({
+                default: 'msg',
+                typeField: $('#node-input-objectNameType'),
+                types: ['msg', 'str']
+            });
         }
     });
 </script>
