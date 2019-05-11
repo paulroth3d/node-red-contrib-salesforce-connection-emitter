@@ -53,6 +53,10 @@ function createJsForceConnectionMock(){
   const result = {
     query: sinon.stub(),
     queryMore: sinon.stub(),
+    tooling: {
+      query: sinon.stub(),
+      queryMore: sinon.stub()
+    },
     streaming: {
       createClient: sinon.stub().returns({
         subscribe: sinon.stub()

@@ -32,7 +32,7 @@ class SoqlQueryProcessor extends AbstractQueryProcessor {
    */
   execute(queryStr, target, connection, msg){
     const resultPromise = new Promise((resolve, reject) => {
-      const validateMsg = this.validateInput(queryStr, target, msg)
+      const validateMsg = this.validateInput(queryStr, target, msg);
       if (validateMsg){
         this.showError(validateMsg);
         reject(new Error(validateMsg));

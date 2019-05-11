@@ -26,9 +26,9 @@ const EXAMPLE_SOQL_QUERY = 'SELECT ID from Account';
 const EXAMPLE_SOQL_QUERY_RESULTS = testUtils.createSoqlQueryResponse([{id:1, type:'Account'}],true);
 const EXAMPLE_SOQL_QUERY2 = 'SELECT ID from Account limit 0';
 const EXAMPLE_SOQL_QUERY2_RESULTS = testUtils.createSoqlQueryResponse([{id:2, type:'Account'}],true);
-const EXAMPLE_TOOLING_QUERY = 'SELECT ID from Account';
+const EXAMPLE_TOOLING_QUERY = 'SELECT ID from Apexclass';
 const EXAMPLE_TOOLING_QUERY_RESULTS = testUtils.createSoqlQueryResponse([{id:3, type:'Account'}],true);
-const EXAMPLE_TOOLING_QUERY2 = 'SELECT ID from Account limit 1';
+const EXAMPLE_TOOLING_QUERY2 = 'SELECT ID from Apexclass limit 1';
 const EXAMPLE_TOOLING_QUERY2_RESULTS = testUtils.createSoqlQueryResponse([{id:4, type:'Account'}],true);
 
 //-- mock the node red node it will work with
@@ -47,6 +47,10 @@ describe('sf-universal-query', () => {
       .callsArgWith(1, null, EXAMPLE_SOQL_QUERY_RESULTS);
     CONNECTION_MOCK.query.withArgs(EXAMPLE_SOQL_QUERY2)
       .callsArgWith(1, null, EXAMPLE_SOQL_QUERY2_RESULTS);
+    CONNECTION_MOCK.tooling.query.withArgs(EXAMPLE_TOOLING_QUERY)
+      .callsArgWith(1, null, EXAMPLE_TOOLING_QUERY_RESULTS);
+    CONNECTION_MOCK.tooling.query.withArgs(EXAMPLE_TOOLING_QUERY2)
+      .callsArgWith(1, null, EXAMPLE_TOOLING_QUERY2_RESULTS);
     MSG_MOCK = {
       payload: {
         query: 'some query to execute'
@@ -141,11 +145,11 @@ describe('sf-universal-query', () => {
   });
   it('can run a soql query', () => {
     const testPromise = new Promise((resolve, reject) => {
+      CONFIG_MOCK.api = 'soql';
       CONFIG_MOCK.query = 'payload.query';
       CONFIG_MOCK.queryType = 'msg';
-      CONFIG_MOCK.results = ''
-      CONFIG_MOCK.target = 'payload.some.results';
       MSG_MOCK.payload.query = EXAMPLE_SOQL_QUERY;
+      CONFIG_MOCK.target = 'payload.some.results';
 
       const queryNode = new UniversalQuery()
         .initialize(RED_MOCK, CONFIG_MOCK, NODE_MOCK)
@@ -175,11 +179,37 @@ describe('sf-universal-query', () => {
   });
   it('can run a tooling query', () => {
     const testPromise = new Promise((resolve, reject) => {
-      const queryNode = new UniversalQuery();
-      queryNode.initialize(RED_MOCK, CONFIG_MOCK, NODE_MOCK);
-      const toolingProcessor = queryNode.determineQueryProcessor(queryNode.PROCESSOR_TYPE_TOOLING);
-      assert.notEqual(toolingProcessor, null);
-      resolve();
+      try {
+        CONFIG_MOCK.api = 'tooling';
+        CONFIG_MOCK.query = 'payload.query';
+        CONFIG_MOCK.queryType = 'msg';
+        MSG_MOCK.payload.query = EXAMPLE_TOOLING_QUERY;
+        CONFIG_MOCK.target = 'payload.some.results';
+
+        const queryNode = new UniversalQuery()
+          .initialize(RED_MOCK, CONFIG_MOCK, NODE_MOCK)
+          .listenToConnection('sfconn');
+        
+        assert.equal(CONNECTION_MOCK.query.called, false, 'initialize: query should not be called');
+        assert.equal(NODE_MOCK.error.called, false, 'initialize: error should not be called');
+        assert.equal(NODE_MOCK.send.called, false, 'initialize: send should not be called');
+
+        NODE_MOCK.emit('input', MSG_MOCK);
+        
+        assert.equal(NODE_MOCK.error.called, false, 'no error should be called');
+        assert.equal(NODE_MOCK.send.called, true, 'send should be called');
+
+        const sendInfo = NODE_MOCK.send.lastCall.args[0];
+        assert.notEqual(sendInfo, null, 'something should have been sent');
+        assert.notEqual(sendInfo.payload.some.results, null, 'target should be set on the msg');
+        assert.equal(sendInfo.payload.some.results.totalSize, EXAMPLE_TOOLING_QUERY_RESULTS.records.length, 'total size should match');
+        assert.equal(sendInfo.payload.some.results.records.length, EXAMPLE_TOOLING_QUERY_RESULTS.records.length, 'results should match');
+        assert.equal(sendInfo.payload.some.results.records[0].id, EXAMPLE_TOOLING_QUERY_RESULTS.records[0].id, 'results should match');
+
+        resolve();
+      } catch(err){
+        reject(err);
+      }
     });
     return testPromise;
   });

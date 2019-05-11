@@ -1,3 +1,4 @@
+const log = require('fancy-log'); // eslint-disable-line no-unused-vars
 
 const AbstractQueryProcessor = require('./AbstractQueryProcessor');
 
@@ -33,15 +34,26 @@ class ToolingQueryProcessor extends AbstractQueryProcessor {
    */
   execute(queryStr, target, connection, msg){
     const resultPromise = new Promise((resolve, reject) => {
-      const validateMsg = this.validateInput(queryStr, target, msg)
+      const validateMsg = this.validateInput(queryStr, target, msg);
       if (validateMsg){
         this.showError(validateMsg);
         reject(new Error(validateMsg));
         return;
       }
-      let result = [];
-      this.sendResults(result, target, msg);
-      resolve();
+
+      connection.tooling.query(queryStr, (err, result) => {
+        if (err) {
+          this.nodeRedNode.error(err);
+          return;
+        }
+
+        log('result captured');
+        log(JSON.stringify(result));
+
+        this.sendResults(result, target, msg);
+        log(`msg:${JSON.stringify(msg)}`);
+        resolve(result);
+      });
     });
     return resultPromise;
   }

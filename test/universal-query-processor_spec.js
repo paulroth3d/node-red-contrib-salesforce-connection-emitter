@@ -26,9 +26,9 @@ const EXAMPLE_SOQL_QUERY = 'SELECT ID from Account';
 const EXAMPLE_SOQL_QUERY_RESULTS = testUtils.createSoqlQueryResponse([{id:1, type:'Account'}],true);
 const EXAMPLE_SOQL_QUERY2 = 'SELECT ID from Account limit 0';
 const EXAMPLE_SOQL_QUERY2_RESULTS = testUtils.createSoqlQueryResponse([{id:2, type:'Account'}],true);
-const EXAMPLE_TOOLING_QUERY = 'SELECT ID from Account';
+const EXAMPLE_TOOLING_QUERY = 'SELECT ID from Objects';
 const EXAMPLE_TOOLING_QUERY_RESULTS = testUtils.createSoqlQueryResponse([{id:3, type:'Account'}],true);
-const EXAMPLE_TOOLING_QUERY2 = 'SELECT ID from Account limit 1';
+const EXAMPLE_TOOLING_QUERY2 = 'SELECT ID from Objects limit 1';
 const EXAMPLE_TOOLING_QUERY2_RESULTS = testUtils.createSoqlQueryResponse([{id:4, type:'Account'}],true);
 
 //-- mock the node red node it will work with
@@ -47,6 +47,10 @@ describe('SoqlQueryProcessor', () => {
       .callsArgWith(1, null, EXAMPLE_SOQL_QUERY_RESULTS);
     CONNECTION_MOCK.query.withArgs(EXAMPLE_SOQL_QUERY2)
       .callsArgWith(1, null, EXAMPLE_SOQL_QUERY2_RESULTS);
+    CONNECTION_MOCK.tooling.query.withArgs(EXAMPLE_TOOLING_QUERY)
+      .callsArgWith(1, null, EXAMPLE_TOOLING_QUERY_RESULTS);
+    CONNECTION_MOCK.tooling.query.withArgs(EXAMPLE_TOOLING_QUERY2)
+      .callsArgWith(1, null, EXAMPLE_TOOLING_QUERY2_RESULTS);
     MSG_MOCK = {
       payload: {
         query: 'some query to execute'
@@ -136,6 +140,10 @@ describe('ToolingQueryProcessor', () => {
       .callsArgWith(1, null, EXAMPLE_SOQL_QUERY_RESULTS);
     CONNECTION_MOCK.query.withArgs(EXAMPLE_SOQL_QUERY2)
       .callsArgWith(1, null, EXAMPLE_SOQL_QUERY2_RESULTS);
+    CONNECTION_MOCK.tooling.query.withArgs(EXAMPLE_TOOLING_QUERY)
+      .callsArgWith(1, null, EXAMPLE_TOOLING_QUERY_RESULTS);
+    CONNECTION_MOCK.tooling.query.withArgs(EXAMPLE_TOOLING_QUERY2)
+      .callsArgWith(1, null, EXAMPLE_TOOLING_QUERY2_RESULTS);
     MSG_MOCK = {
       payload: {
         query: 'some query to execute'
@@ -161,7 +169,7 @@ describe('ToolingQueryProcessor', () => {
         const tooling = new ToolingQueryProcessor(RED_MOCK,CONFIG_MOCK,NODE_MOCK);
         //-- return the execute as the test promise
         return tooling.execute(
-          EXAMPLE_SOQL_QUERY,
+          EXAMPLE_TOOLING_QUERY,
           CONFIG_MOCK.target,
           CONNECTION_MOCK,
           MSG_MOCK
@@ -194,6 +202,7 @@ describe('ToolingQueryProcessor', () => {
           CONNECTION_MOCK,
           MSG_MOCK
         ).then(results => {
+          log('results passed');
           reject(new Error(`Error should be thrown if query is empty, but did not`));
         })
         .catch(err => {
