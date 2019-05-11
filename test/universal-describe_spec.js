@@ -12,7 +12,7 @@ const testUtils = require('./util/TestUtils');
 
 //-- mock connection
 let CONNECTION_EMITTER_MOCK;
-let CONNECTION_MOCK;
+let CONNECTION_MOCK;  // eslint-disable-line no-unused-vars
 //-- mock node red
 let RED_MOCK; //-- to be reset each test, because each test should have its own unique getNode stub
 //-- mock the config passed to the node

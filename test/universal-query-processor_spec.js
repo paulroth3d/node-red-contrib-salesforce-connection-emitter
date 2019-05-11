@@ -3,8 +3,6 @@ const log = require('fancy-log'); // eslint-disable-line no-unused-vars
 //-- asserts for mocha tests / others are also available.
 const {assert,expect} = require('chai'); // eslint-disable-line no-unused-vars
 
-const UniversalQuery = require('../nodes/query/sf-universal-query').infoClass;
-
 const SoqlQueryProcessor = require('../nodes/query/queryProcessor/SoqlQueryProcessor');
 const ToolingQueryProcessor = require('../nodes/query/queryProcessor/ToolingQueryProcessor');
 

@@ -148,7 +148,7 @@ describe('sf-universal-query', () => {
       MSG_MOCK.payload.query = EXAMPLE_SOQL_QUERY;
       CONFIG_MOCK.target = 'payload.some.results';
 
-      const queryNode = new UniversalQuery()
+      const queryNode = new UniversalQuery() // eslint-disable-line no-unused-vars
         .initialize(RED_MOCK, CONFIG_MOCK, NODE_MOCK)
         .listenToConnection('sfconn');
       
@@ -183,7 +183,7 @@ describe('sf-universal-query', () => {
         MSG_MOCK.payload.query = EXAMPLE_TOOLING_QUERY;
         CONFIG_MOCK.target = 'payload.some.results';
 
-        const queryNode = new UniversalQuery()
+        const queryNode = new UniversalQuery() // eslint-disable-line no-unused-vars
           .initialize(RED_MOCK, CONFIG_MOCK, NODE_MOCK)
           .listenToConnection('sfconn');
         

@@ -4,7 +4,6 @@ const ConnectionReceiver = require('../connection/sf-connection-receiver');
 
 require('../Types');
 
-const AbstractDescribeProcessor = require('./describeProcessor/AbstractDescribeProcessor')
 const MetadataDescribeProcessor = require('./describeProcessor/MetadataDescribeProcessor');
 const ToolingDescribeProcessor = require('./describeProcessor/ToolingDescribeProcessor');
 const SoapDescribeProcessor = require('./describeProcessor/SoapDescribeProcessor');
@@ -58,7 +57,7 @@ class SfUniversalDescribe extends ConnectionReceiver {
   /**
    * Determines the processor to use
    * @param {string} api - (soql|tooling)
-   * @returns {AbstractDescribeProcessor} - processor
+   * @returns {import('./describeProcessor/AbstractDescribeProcessor')} - processor
    */
   determineDescribeProcessor(api){
     if (api === this.PROCESSOR_TYPE_METADATA){

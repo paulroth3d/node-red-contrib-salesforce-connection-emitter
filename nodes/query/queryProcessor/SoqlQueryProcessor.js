@@ -1,4 +1,4 @@
-const log = require('fancy-log'); // eslint-disable-line no-unused-defs
+const log = require('fancy-log'); // eslint-disable-line no-unused-vars
 
 const AbstractQueryProcessor = require('./AbstractQueryProcessor');
 
