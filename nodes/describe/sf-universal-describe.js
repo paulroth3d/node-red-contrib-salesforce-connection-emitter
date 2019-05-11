@@ -20,7 +20,7 @@ class SfUniversalDescribe extends ConnectionReceiver {
     /** Indicates the tooling type */
     this.PROCESSOR_TYPE_TOOLING = 'tooling';
     /** Indicates the soql type */
-    this.PROCESSOR_TYPE_METADATA = 'meta';
+    this.PROCESSOR_TYPE_METADATA = 'metadata';
     /** Indicates the soql type */
     this.PROCESSOR_TYPE_SOAP = 'soap';
 
