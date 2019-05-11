@@ -44,6 +44,8 @@ class SfUniversalDescribe extends ConnectionReceiver {
     //-- capture information from the nodeRedNode
     this.name = config.name;
 
+    this.api = config.api;
+
     //-- handle events on the nodeRedNode
     nodeRedNode.on('input', (msg) => {
       // msg.payload = node.query;
@@ -67,7 +69,7 @@ class SfUniversalDescribe extends ConnectionReceiver {
     } else if( api === this.PROCESSOR_TYPE_TOOLING){
       return new ToolingDescribeProcessor(this.RED, this.config, this.nodeRedNode);
     } else {
-      this.nodeRedNode.error(`Unknown query processor type:${api}`);
+      this.nodeRedNode.error(`Unknown describe processor type:${api}`);
       return null;
     }
   }
@@ -87,7 +89,11 @@ class SfUniversalDescribe extends ConnectionReceiver {
    * @return {string} - the object to describe
    */
   determineObjectName(msg){
-    return this.RED.util.evaluateNodeProperty(this.config.objectName, this.config.objectNameType, this.nodeRedNode, msg);
+    if (this.config.objectName) {
+      return this.RED.util.evaluateNodeProperty(this.config.objectName, this.config.objectNameType, this.nodeRedNode, msg);
+    } else {
+      return null;
+    }
   }
 
   /**

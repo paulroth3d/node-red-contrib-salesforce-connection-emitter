@@ -10,7 +10,7 @@
 	<div class="form-row">
         <label for="node-input-api"><i class="fa fa-tag"></i> API</label>
 		<select id="node-input-api" style="width:180px;">
-			<option value="soql">SOQL</option>
+			<option value="soap">SOAP</option>
 			<option value="tooling">Tooling</option>
 			<option value="metadata">Metadata</option>
 		</select>
@@ -83,9 +83,9 @@
             name: { value: '' },
             sfconn: { type:'sf-connection-emitter' },
             api: {
-                value: 'soql',
+                value: 'soap',
                 validate: function(val){
-                    return val === 'soql' || val === 'tooling';
+                    return val === 'metadata' || val === 'tooling' || val === 'soap'
                 }
             },
 			describeAll: { value: true},

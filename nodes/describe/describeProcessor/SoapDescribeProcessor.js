@@ -35,37 +35,38 @@ class SoapDescribeProcessor extends AbstractDescribeProcessor {
         return;
       }
 
-      connection.metadata.describe((error, result) => {
-        if (error){
-          this.showError(error);
-          reject(new Error('Error occurred:' + JSON.stringify(error)));
-          return;
-        }
-
-        if (describeAll){
-          connection.describeGlobal((error, result) => {
-            if (error){
-              this.showError(error);
-              reject(new Error('Error occurred:' + JSON.stringify(error)));
-              return;
-            }
-    
-            this.sendResults(result, target, msg);
-            resolve(result);
-          });
-        } else {
-          connection.describe(objectName, (error, result) => {
-            if (error){
-              this.showError(error);
-              reject(new Error('Error occurred:' + JSON.stringify(error)));
-              return;
-            }
-    
-            this.sendResults(result, target, msg);
-            resolve(result);
-          });
-        }
-      });
+      // log('soap/metadata describe');
+      if (describeAll){
+        // log('soap/metadata describe global start');
+        connection.describeGlobal((error, result) => {
+          // log('soap/metadata describe global start callback');
+          if (error){
+            // log('soap/metadata describe global error');
+            this.showError(error);
+            reject(new Error('Error occurred:' + JSON.stringify(error)));
+            return;
+          }
+          
+          // log('soap/metadata describe global success');
+          this.sendResults(result, target, msg);
+          resolve(result);
+        });
+      } else {
+        // log(`soap/metadata describe ${objectName} start`);
+        connection.describe(objectName, (error, result) => {
+          // log(`soap/metadata describe ${objectName} callback`);
+          if (error){
+            // log(`soap/metadata describe ${objectName} error`);
+            this.showError(error);
+            reject(new Error('Error occurred:' + JSON.stringify(error)));
+            return;
+          }
+  
+          // log(`soap/metadata describe ${objectName} success`);
+          this.sendResults(result, target, msg);
+          resolve(result);
+        });
+      }
     });
     return resultPromise;
   }
