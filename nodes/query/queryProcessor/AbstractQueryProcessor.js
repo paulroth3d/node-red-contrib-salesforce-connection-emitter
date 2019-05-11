@@ -18,6 +18,8 @@ class AbstractQueryProcessor {
     this.config = config;
     /** @property {NODE_RED_NODE} nodeRedNode - the node red node this works against */
     this.nodeRedNode = nodeRedNode;
+    /** @property {string} type - the type of processor */
+    this.type = 'abstract';
   }
 
   /**

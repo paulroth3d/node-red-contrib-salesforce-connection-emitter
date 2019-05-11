@@ -41,6 +41,8 @@ class SfUniversalQuery extends ConnectionReceiver {
     //-- capture information from the nodeRedNode
     this.name = config.name;
 
+    this.api = config.api;
+
     //-- handle events on the nodeRedNode
     nodeRedNode.on('input', (msg) => {
       // msg.payload = node.query;
@@ -57,11 +59,11 @@ class SfUniversalQuery extends ConnectionReceiver {
    */
   determineQueryProcessor(api){
     if (api === this.PROCESSOR_TYPE_TOOLING){
-      return new ToolingQueryProcessor();
+      return new ToolingQueryProcessor(this.RED, this.config, this.nodeRedNode);
     } else if( api === this.PROCESSOR_TYPE_SOQL){
-      return new SoqlQueryProcessor();
+      return new SoqlQueryProcessor(this.RED, this.config, this.nodeRedNode);
     } else {
-      this.error(`Unknown query processor type:${api}`);
+      this.nodeRedNode.error(`Unknown query processor type:${api}`);
       return null;
     }
   }
@@ -72,6 +74,40 @@ class SfUniversalQuery extends ConnectionReceiver {
    */
   handleNewConnection(connection){
     super.handleNewConnection(connection);
+
+    this.nodeRedNode.removeAllListeners('input');
+    this.nodeRedNode.on('input', (msg) => {
+      const query = this.determineQuery(msg);
+      const target = this.determineTarget(msg);
+
+      //-- @TODO: verify there is no issue with garbage collection
+      //-- we want to support multiple queries - there is a possibility of more than one running at a time
+      const processor = this.determineQueryProcessor(this.api);
+      processor.execute(
+        query,
+        target,
+        this.connectionEmitter.connection,
+        msg
+      );
+    });
+  }
+
+  /**
+   * Determines the query from a msg
+   * @param {object} msg - the message to capture the information from
+   * @return {string} - the query to execute
+   */
+  determineQuery(msg){
+    return this.RED.util.evaluateNodeProperty(this.config.query, this.config.queryType, this.nodeRedNode, msg);
+  }
+
+  /**
+   * Determines the msg target path to store the results
+   * @param {object} msg - the message to capture the information from
+   * @return {string} - the target path
+   */
+  determineTarget(msg){
+    return this.config.target;
   }
 
   /**

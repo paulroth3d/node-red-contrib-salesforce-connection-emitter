@@ -8,6 +8,7 @@ const AbstractQueryProcessor = require('./AbstractQueryProcessor');
 class SoqlQueryProcessor extends AbstractQueryProcessor {
   constructor(RED, config, nodeRedNode){
     super(RED, config, nodeRedNode);
+    this.type = 'soql';
   }
   
   /**
@@ -54,7 +55,7 @@ class SoqlQueryProcessor extends AbstractQueryProcessor {
           connection.queryMore(result.nextRecordsUrl, queryCallback);
         } else {
           result.records = totalRecords;
-          result.totalSize = result.records.length;
+          result.totalSize = totalRecords.length;
 
           this.sendResults(result, target, msg);
           resolve(result);

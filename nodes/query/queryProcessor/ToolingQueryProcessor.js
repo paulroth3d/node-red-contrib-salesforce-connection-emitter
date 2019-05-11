@@ -9,6 +9,7 @@ require('../../Types');
 class ToolingQueryProcessor extends AbstractQueryProcessor {
   constructor(RED, config, nodeRedNode){
     super(RED, config, nodeRedNode);
+    this.type = 'tooling';
   }
   
   /**
