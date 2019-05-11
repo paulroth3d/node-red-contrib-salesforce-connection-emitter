@@ -8,10 +8,11 @@
         <input type="sf-connection-emitter" id="node-input-sfconn">
     </div>
 	<div class="form-row">
-        <label for="node-input-api"><i class="fa fa-tag"></i> Query</label>
+        <label for="node-input-api"><i class="fa fa-tag"></i> API</label>
 		<select id="node-input-api" style="width:180px;">
 			<option value="soql">SOQL</option>
 			<option value="tooling">Tooling</option>
+			<option value="metadata">Metadata</option>
 		</select>
 	</div>
 	<div class="form-row">
@@ -45,7 +46,7 @@
                 Connection <span class="property-type">node</span>
             </dt>
             <dd>
-                Which API to use (SOQL/TOOLING)
+                Which API to use (SOQL/TOOLING/METADATA)
             </dd>
             <dt>
                 API<span class="property-type">string</span>
@@ -90,16 +91,7 @@
 			describeAll: { value: true},
             objectName: {
                 value: '',
-                required: true,
-                validate: function(val){
-                    if (this.describeAll){
-                        return !val;
-                    } else if (!val){
-                        return false;
-                    } else {
-                        return RED.validators.typedInput('objectNameType')(val);
-                    }
-                }
+                validate: function(val){ return true; }
             },
             objectNameType: {
                 value: 'msg'

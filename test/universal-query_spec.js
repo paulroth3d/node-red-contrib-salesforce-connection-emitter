@@ -5,9 +5,6 @@ const {assert,expect} = require('chai'); // eslint-disable-line no-unused-vars
 
 const UniversalQuery = require('../nodes/query/sf-universal-query').infoClass;
 
-const SoqlQueryProcessor = require('../nodes/query/queryProcessor/SoqlQueryProcessor');
-const ToolingQueryProcessor = require('../nodes/query/queryProcessor/ToolingQueryProcessor');
-
 //-- helper for node red
 // const helper = require('node-red-node-test-helper');
 
