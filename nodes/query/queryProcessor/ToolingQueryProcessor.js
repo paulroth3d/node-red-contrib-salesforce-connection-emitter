@@ -41,19 +41,30 @@ class ToolingQueryProcessor extends AbstractQueryProcessor {
         return;
       }
 
-      connection.tooling.query(queryStr, (err, result) => {
+      let totalRecords = [];
+
+      //-- callback used for both query / queryMore
+      const queryCallback = (err, result) => {
         if (err) {
           this.nodeRedNode.error(err);
           return;
         }
 
-        log('result captured');
-        log(JSON.stringify(result));
+        //-- combine to a set of all records retrieved...
+        totalRecords = [...totalRecords, ...result.records];
 
-        this.sendResults(result, target, msg);
-        log(`msg:${JSON.stringify(msg)}`);
-        resolve(result);
-      });
+        if (!result.done){
+          connection.queryMore(result.queryLocator, queryCallback);
+        } else {
+          result.records = totalRecords;
+          result.totalSize = totalRecords.length;
+
+          this.sendResults(result, target, msg);
+          resolve(result);
+        }
+      };
+      
+      connection.tooling.query(queryStr, queryCallback);
     });
     return resultPromise;
   }
