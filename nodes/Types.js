@@ -66,6 +66,7 @@
  * @typedef _NODE_RED_NODE_TYPE
  * @property {(NODE_RED_STATUS) => void} status - Sets the status on the node
  * @property {(object) => boolean} send - Sends a message to the next node via wires.
+ * @property {(string) => void} error - dispatch an error message
  * 
  * @typedef {EventEmitter & _NODE_RED_NODE_TYPE} NODE_RED_NODE
  */
@@ -82,6 +83,44 @@
  * @property {class} infoClass - The es6 class that has the logic for the node.
  * 
  * @typedef {_NodeRedClassNodeType & NODE_RED_NODE} NodeRedClassNode
+ **/
+
+//-- because of a limitation
+//-- that we cannot use AMD Modules
+//-- and the choice of keeping the class in the same file
+//-- visual studio code cannot allow us to use the existing es6 class for types
+//-- so we mock them up here.
+
+//-- @TODO - either move the classes to another file
+//-- or figure out how to make visual studio code make use of them from the module
+
+/**
+ * Represents a Node Red Connection Emitter
+ * @typedef ConnectionEmitterType
+ * @property {import('jsforce').Connection} connection - the connection to use
+ * 
+ * @typedef {EventEmitter & ConnectionEmitterType} ConnectionEmitter
+ */
+
+/**
+ * Represents a Node Red Connection Emitter Node
+ * @typedef ConnectionEmitterNodeType
+ * @property {ConnectionEmitter} info - The connection emitter for this node red node
+ * @property {class} infoClass - the es6 class for the connection emitter.
+ * 
+ * @typedef {NODE_RED_NODE & ConnectionEmitterNodeType} ConnectionEmitterNode
+ */
+
+/**
+ * Represents a Connection Receiver
+ * @typedef ConnectionReceiverType
+ * @property {RED} RED - the node red server
+ * @property {RED_CONFIG} config - the config sent for the node
+ * @property {NODE_RED_NODE} nodeRedNode - the current node red node this operates on.
+ * @property {ConnectionEmitter} connectionEmitter -
+ * @property {import('jsforce').Connection} connection - current connection
+ * 
+ * @typedef {EventEmitter & ConnectionReceiverType} ConnectionReceiver
  **/
 
 //-- @TODO: use @types/events

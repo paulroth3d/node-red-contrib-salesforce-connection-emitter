@@ -8,6 +8,8 @@ const sinon = require('sinon');
 
 const EventEmitter = require('events').EventEmitter;
 
+const ConnectionEmitter = require('../../nodes/connection/sf-connection-emitter');
+
 /**
  * Creates a mock Node Red server
  * @param {string} connectionConfigId - the id of the node that the connection should be found under
@@ -35,7 +37,8 @@ function createConnectionEmitterMock(jsForceConnection){
     jsForceConnection = createJsForceConnectionMock();
   }
   const config = {
-    info: new EventEmitter()
+    info: new EventEmitter(),
+    infoClass: ConnectionEmitter
   };
   config.info.connection = jsForceConnection;
 
@@ -102,6 +105,7 @@ function createNodeRedNodeMock(){
   const results = new EventEmitter();
   results.status = sinon.spy();
   results.send = sinon.spy();
+  results.error = sinon.stub();
 
   results.context_get = sinon.stub();
   results.context_set = sinon.stub();

@@ -13,19 +13,16 @@ const STATUS_CONNECTED = 'CONNECTED';
 const STATUS_DISCONNECTED = 'DISCONNECTED';
 
 /**
- * Base Class for Node Red Nodes that should utilize the SfConnectionEmitter.
+ * 
  * @class SfConnectionReceiver
- * @property {} connectionEmitter - the current connection
- * @property {RED} RED - the node red server
- * @property {RED_CONFIG} config - the configuration for the node
- * @property {NODE_RED_NODE} nodeRedNode - the node red node this will be working with.
+ * @property  connectionEmitter - the current connection
  */
 class SfConnectionReceiver {
 
   /**
    * Initialize the Receiver
-   * @param {RED} RED - Node Red Instance
-   * @param {RED_CONFIG} config - config module passed from node red
+   * @param {import('node-red')} RED - Node Red Instance
+   * @param {object} config - config module passed from node red
    * @param {NODE_RED_NODE} nodeRedNode - the current node red node
    * @returns {SfConnectionReceiver} -
    */
