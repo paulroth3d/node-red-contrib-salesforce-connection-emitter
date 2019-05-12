@@ -16,12 +16,12 @@ We would instead like to ensure the following:
 # Nodes
 
 * [connection.SfConnectionEmitter](#connectionsfconnectionemitter)
-* [query.SfSoqlQuery](##querysfsoqlquery)
+* [query.SfSoqlQuery](#querysfsoqlquery)
 * [platformEvents.SfPlatformEventSubscriber](#platformeventssfplatformeventsubscriber)
 * [platformEvents.SfPlatformEventPublisher](#platformeventssfplatformeventpublisher)
 * [query.SfUniversalQuery](#querysfuniversalquery)
 * [describe.SfUniversalDescribe](#describesfuniversaldescribe)
-* [http.SfUniversalHttp](#httpsfuniveersalhttp)
+* [http.SfUniversalHttp](#httpsfuniversalhttp)
 
 ---
 
