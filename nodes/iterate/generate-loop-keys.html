@@ -2,18 +2,51 @@
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name" />
+        <label for="node-input-arrayPath"><i class="fa fa-tag"></i> Msg Array Path</label>
+        <input type="text" id="node-input-arrayPath" placeholder="" />
+        <label for="node-input-keyPath"><i class="fa fa-tag"></i> Key Path</label>
+        <input type="text" id="node-input-keyPath" placeholder="" />
+        <label for="node-input-valuePath"><i class="fa fa-tag"></i> Value Path</label>
+        <input type="text" id="node-input-valuePath" placeholder="" />
+        <label for="node-input-targetPath"><i class="fa fa-tag"></i> Target Path</label>
+        <input type="text" id="node-input-targetPath" placeholder="" />
     </div>
 </script>
 <script type="text/x-red" data-help-name="generate-loop-keys">
     <div>
         <a class="node-info-header expanded" href="#"><i class="fa fa-angle-right"></i>Inputs</a>
         <dl class="message-properties">
-        <dt>
-            Name<span class="property-type">node</span>
-        </dt>
-        <dd>
-            Label of the node shown in the editor.
-        </dd>
+            <dt>
+                Name<span class="property-type">node</span>
+            </dt>
+            <dd>
+                Label of the node shown in the editor.
+            </dd>
+            <dt>
+                Array Path<span class="property-type">string</span>
+            </dt>
+            <dd>
+                Path to the array we should iterate within.
+            </dd>
+            <dt>
+                Key Path<span class="property-type">string</span>
+            </dt>
+            <dd>
+                Path to the unique identifier within each element of the array <br />
+                (leave blank for this to be auto generated)
+            </dd>
+            <dt>
+                Value Path<span class="property-type">string</span>
+            </dt>
+            <dd>
+                Path to the value to iterate within each element of the array.
+            </dd>
+            <dt>
+                Target Path<span class="property-type">string</span>
+            </dt>
+            <dd>
+                Property to assign with the value in each of the split messages.
+            </dd>
         </dl>
     </div>
 </script>
@@ -22,7 +55,11 @@
         category: 'Loop',
         color: '#C0DEED',
         defaults: {
-            name: { value: '' }
+            name: { value: '' },
+            arrayPath: { value: '', required:true },
+            keyPath: { value: '' },
+            valuePath: { value: '', required:true },
+            TargetPath: { value: '', required:true }
         },
         inputs: 1,
         outputs: 1,
