@@ -33,13 +33,6 @@ class UniversalHttp extends ConnectionReceiver {
     //-- capture information from the nodeRedNode
     this.name = config.name;
 
-    //-- handle events on the nodeRedNode
-    nodeRedNode.on('input', (msg) => {
-      // msg.payload = node.query;
-
-      nodeRedNode.send(msg);
-    });
-
     return this;
   }
 
@@ -49,6 +42,30 @@ class UniversalHttp extends ConnectionReceiver {
    */
   handleNewConnection(connection){
     super.handleNewConnection(connection);
+
+    let url;
+    // let targetPath = config.target;
+
+    //-- handle events on the nodeRedNode
+    this.nodeRedNode.on('input', (msg) => {
+      // msg.payload = node.query;
+
+      url = this.RED.util.evaluateNodeProperty(this.config.url, this.config.urlType, this.nodeRedNode, msg);
+      
+      connection.requestGet(url, null, (err, result) => {
+        if (err){
+          this.nodeRedNode.error({
+            status:'error',
+            request:url,
+            err: err
+          });
+          return;
+        }
+
+        this.RED.util.setMessageProperty(msg, this.config.target, result);
+        this.nodeRedNode.send(msg);
+      });
+    });
   }
 
   /**

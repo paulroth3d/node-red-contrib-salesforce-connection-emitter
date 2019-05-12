@@ -24,7 +24,6 @@ let MSG_MOCK;
 
 describe('sf-universal-describe', () => {
   beforeEach((done) => {
-    log('red mock setup');
     //-- reset the red mock to ensure the getNode is specific to this test
     RED_MOCK = testUtils.createNodeRedMock('sfconn-id', CONNECTION_EMITTER_MOCK);
     NODE_MOCK = testUtils.createNodeRedNodeMock();
@@ -68,7 +67,6 @@ describe('sf-universal-describe', () => {
       CONFIG_MOCK.describeAll = true;
       describeNode.initialize(RED_MOCK, CONFIG_MOCK, NODE_MOCK);
       const targetResult = describeNode.determineDescribeAll(MSG_MOCK);
-      log(`targetResult:${targetResult?'true':'false'}`);
       const targetExpected = true;
       assert.equal(targetResult, targetExpected);
       resolve();
