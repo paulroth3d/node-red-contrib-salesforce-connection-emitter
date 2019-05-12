@@ -1,6 +1,6 @@
 const log = require('fancy-log'); // eslint-disable-line
 
-const assert = require('assert');
+const {assert,expect} = require('chai');
 
 const EmitterNodes = require('../index');
 
@@ -41,6 +41,17 @@ describe('index', () => {
     //const emitter = new SfConnectionEmitter.infoClass(RED);
     const emitter = new SfConnectionEmitter();
     assert.notEqual(emitter, null, 'emitter should be created');
+    done();
+  });
+
+  it('can find the classes in the facade', (done) => {
+    expect(EmitterNodes.connection.SfConnectionEmitter).not.to.be.null;
+    expect(EmitterNodes.connection.SfConnectionReceiver).not.to.be.null;
+    expect(EmitterNodes.describe.SfUniversalDescribe).not.to.be.null;
+    expect(EmitterNodes.http.SfUnversalHttp).not.to.be.null;
+    expect(EmitterNodes.platformEvents.SfPlatformEventPublisher).not.to.be.null;
+    expect(EmitterNodes.platformEvents.SfPlatformEventSubscriber).not.to.be.null;
+    expect(EmitterNodes.query.SfUniversalQuery).not.to.be.null;
     done();
   });
 });
