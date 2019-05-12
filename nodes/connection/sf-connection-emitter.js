@@ -150,7 +150,7 @@ class ConnectionEmitter extends EventEmitter {
           })
         };
         this.emit('newConnection', this.connection);
-       return;
+        return;
       } else {
         let conn = new jsforce.Connection({
           loginUrl: host
