@@ -51,8 +51,8 @@ class UniversalHttp extends ConnectionReceiver {
       // msg.payload = node.query;
 
       url = this.RED.util.evaluateNodeProperty(this.config.url, this.config.urlType, this.nodeRedNode, msg);
-      
       connection.requestGet(url, null, (err, result) => {
+        log('requestGet response');
         if (err){
           this.nodeRedNode.error({
             status:'error',
@@ -61,8 +61,10 @@ class UniversalHttp extends ConnectionReceiver {
           });
           return;
         }
-
-        this.RED.util.setMessageProperty(msg, this.config.target, result);
+        this.RED.util.setMessageProperty(msg, this.config.target, {
+          url: url,
+          response: result
+        });
         this.nodeRedNode.send(msg);
       });
     });

@@ -69,7 +69,7 @@ describe('sf-universal-http', () => {
     const testPromise = new Promise((resolve, reject) => {
       CONFIG_MOCK.url = 'payload.url';
       CONFIG_MOCK.urlType = 'msg';
-      CONFIG_MOCK.target = 'payload.results';
+      CONFIG_MOCK.target = 'payload.call';
       const node = new UniversalHttp()
         .initialize(RED_MOCK, CONFIG_MOCK, NODE_MOCK)
         .listenToConnection('sfconn');
@@ -79,8 +79,9 @@ describe('sf-universal-http', () => {
 
       assert(NODE_MOCK.send.called,'send should be called');
       const sendVal = NODE_MOCK.send.lastCall.args[0];
-      // log(sendVal);
-      assert.equal(sendVal.payload.results.id, EXAMPLE_URL_RESPONSE.id);
+      log(sendVal);
+      assert.equal(sendVal.payload.call.url, EXAMPLE_URL);
+      assert.equal(sendVal.payload.call.response.id, EXAMPLE_URL_RESPONSE.id);
       resolve();
     });
     return testPromise;
