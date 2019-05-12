@@ -15,7 +15,6 @@
   },
   "node-red": {
     "nodes": {
-      "generate-loop-keys": "nodes/iterate/generate-loop-keys.js",
       "sf-connection-emitter": "nodes/connection/sf-connection-emitter.js",
       "sf-soql-query": "nodes/query/sf-soql-query.js",
       "sf-platform-event-pub": "nodes/platformEvents/sf-platform-event-pub.js",
