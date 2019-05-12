@@ -107,6 +107,8 @@ Each configuration manages the connection to salesforce, and emits events to tho
 
 For nodes that subclass the [connection.SfConnectionReceiver](#connectionsfconnectionreceiver) - this is all handled for you... For more information, [please see that class](nodes/connection/sf-connection-receiver.js)
 
+---
+
 ## [query.SfSoqlQuery](nodes/query/sf-soql-query.js)
 
 Use this node to perform a SOQL query to capture information from Salesforce
@@ -149,6 +151,8 @@ Use this node to perform a SOQL query to capture information from Salesforce
 </table>
 
 ![Screenshot of Soql Query](docs/images/SoqlQuery.jpg)
+
+---
 
 ## [platformEvents.SfPlatformEventSubscriber](nodes/platformEvents/sf-platform-event-sub.js)
 
@@ -210,6 +214,7 @@ To force the replay Id, configure it with an exclaimation mark / bang at the end
 For example: 12!
 
 
+---
 
 ## [platformEvents.SfPlatformEventPublisher](nodes/platformEvents/sf-platform-event-pub.js)
 
@@ -253,6 +258,8 @@ More on Platform Events can also be [found on Trailhead.Salesforce.com](https://
 
 ![Screenshot of Publisher](docs/images/publisher.jpg)
 
+
+---
 
 ## [query.SfUniversalQuery](nodes/nodes/query/sf-universal-query.js)
 
@@ -322,6 +329,68 @@ Supports selection of the API, queries that can be (environment variables, globa
 
 
 
+---
+
+## [describe.SfUniversalDescribe](nodes/describe/sf-universal-describe.js)
+
+Use this node to describe all objects or just a particular object using the `Metadata API`, `Tooling API` or `SOAP API`.
+
+The name of the object to describe can also be defined either as a message property, or as a literal string.
+
+<b>Please note there is a bug with Node Red where the sobject appears required when it is not. The sobject is only required when not performing a `describe all`</b>
+
+## Example Flow
+
+	[{"id":"7061841b.7dc20c","type":"tab","label":"Describe","disabled":false,"info":""},{"id":"ba6d47c3.0396f8","type":"inject","z":"7061841b.7dc20c","name":"Start","topic":"","payload":"{}","payloadType":"json","repeat":"","crontab":"","once":false,"onceDelay":0.1,"x":150,"y":80,"wires":[["806d933.686d77"]]},{"id":"806d933.686d77","type":"sf-universal-describe","z":"7061841b.7dc20c","name":"","sfconn":"73000fb4.ffb8e","api":"soap","describeAll":true,"objectName":"","objectNameType":"msg","target":"payload.describe","x":380,"y":80,"wires":[["221f1521.c786aa"]]},{"id":"221f1521.c786aa","type":"debug","z":"7061841b.7dc20c","name":"","active":true,"tosidebar":true,"console":false,"tostatus":false,"complete":"false","x":600,"y":80,"wires":[]},{"id":"ea764edf.67e0c","type":"comment","z":"7061841b.7dc20c","name":"Describe Everything","info":"","x":170,"y":40,"wires":[]},{"id":"6c23a421.ca6f3c","type":"comment","z":"7061841b.7dc20c","name":"","info":"","x":140,"y":160,"wires":[]},{"id":"5c26c6e1.7c68d8","type":"inject","z":"7061841b.7dc20c","name":"{\"sobject\":\"Account\"}","topic":"","payload":"{\"sobject\":\"Account\"}","payloadType":"json","repeat":"","crontab":"","once":false,"onceDelay":0.1,"x":180,"y":220,"wires":[["722eb5e5.bc948c"]]},{"id":"722eb5e5.bc948c","type":"sf-universal-describe","z":"7061841b.7dc20c","name":"","sfconn":"73000fb4.ffb8e","api":"soap","describeAll":false,"objectName":"payload.sobject","objectNameType":"msg","target":"payload.describe","x":420,"y":220,"wires":[["c941c43f.b7d5b8"]]},{"id":"c941c43f.b7d5b8","type":"debug","z":"7061841b.7dc20c","name":"","active":true,"tosidebar":true,"console":false,"tostatus":false,"complete":"false","x":640,"y":220,"wires":[]},{"id":"73000fb4.ffb8e","type":"sf-connection-emitter","z":"","host":"SF_HOST","hostType":"env","username":"SF_USERNAME","usernameType":"env","password":"SF_PASSWORD","passwordType":"env","token":"","tokenType":"env"}]
+
+![Screenshot of universal describe](docs/images/UniversalDescribe.png)
+
+<table>
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Type</th>
+			<th>Description</th>
+			<th>Example</th>
+		</tr>
+	</thead>
+	<tbody>
+	<tbody>
+		<tr>
+			<td>Name</td>
+			<td>String</td>
+			<td>Label to show in Node Red Editor</td>
+			<td>PE Subscription</td>
+		</tr>
+		<tr>
+			<td>Connection</td>
+			<td> connection.SfConnectionEmitter</td>
+			<td>The connection emitter configuration to use</td>
+			<td>sfconn</td>
+		</tr>
+		<tr>
+			<td>Describe All</td>
+			<td>boolean</td>
+			<td>Whether to describe everything (true) or only an sobject (false)</td>
+			<td>false</td>
+		</tr>
+		<tr>
+			<td>SObject Name</td>
+			<td>string</td>
+			<td>API Name of the SObject to describe</td>
+			<td>Account</td>
+		</tr>
+		<tr>
+			<td>Target</td>
+			<td>String</td>
+			<td>The path within the message to put the results</td>
+			<td>payload.results</td>
+		</tr>
+	</tbody>
+</table>
+
+
+---
 
 ## [http.SfUniversalHttp](nodes/http/sf-universal-http)
 
@@ -401,50 +470,6 @@ such as templated from a previous describe...
 		</tr>
 	</tbody>
 </table>
-
-
-
-## [platformEvents.SfPlatformEventPublisher](nodes/platformEvents/sf-platform-event-pub.js)
-
-Use this to publish <a href='https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_intro.htm'>Salesforce Platform Events</a>
-
-Simply apply the object you want to publish as the msg.payload and it will handle the rest.
-
-More on Platform Events can also be [found on Trailhead.Salesforce.com](https://trailhead.salesforce.com/en/content/learn/modules/platform_events_basics)
-
-<table>
-	<thead>
-		<tr>
-			<th>Name</th>
-			<th>Type</th>
-			<th>Description</th>
-			<th>Example</th>
-		</tr>
-	</thead>
-	<tbody>
-	<tbody>
-		<tr>
-			<td>Name</td>
-			<td>String</td>
-			<td>Label to show in Node Red Editor</td>
-			<td>PE Subscription</td>
-		</tr>
-		<tr>
-			<td>Connection</td>
-			<td> connection.SfConnectionEmitter</td>
-			<td>The connection emitter configuration to use</td>
-			<td>sfconn</td>
-		</tr>
-		<tr>
-			<td>Event API Name</td>
-			<td>string</td>
-			<td>Platform Event Object API Name</td>
-			<td>ltng_Hello__e</td>
-		</tr>
-	</tbody>
-</table>
-
-![Screenshot of Publisher](docs/images/publisher.jpg)
 
 ---
 
