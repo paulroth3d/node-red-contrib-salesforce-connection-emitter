@@ -12,6 +12,8 @@ const sinon = require('sinon');
 
 const jsforce = require('jsforce');
 
+const MAX_LISTENER_COUNT = 50;
+
 /**
  * @description Component that represents a single connection to Salesforce.
  * This include the credentials - or the environment variables that store them,
@@ -75,6 +77,9 @@ class ConnectionEmitter extends EventEmitter {
     if (token) {
       this.password += token;
     }
+
+    //-- @TODO: determine better way to allow end users to assign maxListeners
+    this.setMaxListeners(MAX_LISTENER_COUNT);
 
     // log(`host:${this.host}`);
     // log(`username:${this.username}`);
