@@ -52,7 +52,6 @@ class UniversalHttp extends ConnectionReceiver {
 
       url = this.RED.util.evaluateNodeProperty(this.config.url, this.config.urlType, this.nodeRedNode, msg);
       connection.requestGet(url, null, (err, result) => {
-        log('requestGet response');
         if (err){
           this.nodeRedNode.error({
             status:'error',
