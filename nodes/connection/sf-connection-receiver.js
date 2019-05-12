@@ -21,15 +21,15 @@ class SfConnectionReceiver {
 
   /**
    * Initialize the Receiver
-   * @param {import('node-red')} RED - Node Red Instance
+   * @param {NodeRed} RED - Node Red Instance
    * @param {object} config - config module passed from node red
    * @param {NODE_RED_NODE} nodeRedNode - the current node red node
    * @returns {SfConnectionReceiver} -
    */
   initialize(RED, config, nodeRedNode){
-    /** @property {import('node-red')} RED - the Node Red server */
+    /** @property {NodeRed} RED - the Node Red server */
     this.RED = RED;
-    /** @property {RED_CONFIG} config - the configuration sent to this node */
+    /** @property {NodeRedConfig} config - the configuration sent to this node */
     this.config = config;
     /** @property {NODE_RED_NODE} nodeRedNode - the Node Red Node instance this class manages */
     this.nodeRedNode = nodeRedNode;

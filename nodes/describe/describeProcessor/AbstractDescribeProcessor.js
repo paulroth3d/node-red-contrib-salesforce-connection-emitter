@@ -14,7 +14,7 @@ class AbstractDescribeProcessor {
   constructor(RED, config, nodeRedNode){
     /** @property {RED} RED - the node red server */
     this.RED = RED;
-    /** @property {RED_CONFIG} config - the configuration for the node */
+    /** @property {NodeRedConfig} config - the configuration for the node */
     this.config = config;
     /** @property {NODE_RED_NODE} nodeRedNode - the node red node this works against */
     this.nodeRedNode = nodeRedNode;

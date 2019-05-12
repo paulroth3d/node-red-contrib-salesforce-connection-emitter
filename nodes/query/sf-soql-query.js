@@ -9,7 +9,7 @@ require('../Types');
  * @class SfSoqlQuery
  * @extends NodeRedNodeClass
  * @property {RED} RED - Node Red instance
- * @property {RED_CONFIG} config - configuration sent for the node
+ * @property {NodeRedConfig} config - configuration sent for the node
  * @property {NODE_RED_NODE} nodeRedNode
  */
 class SoqlQueryNode extends ConnectionReceiver {
@@ -24,7 +24,7 @@ class SoqlQueryNode extends ConnectionReceiver {
   /**
    * Initialize the node red node
    * @param {RED} RED - Node Red framework
-   * @param {RED_CONFIG} config - configuration for module from the node red editor
+   * @param {NodeRedConfig} config - configuration for module from the node red editor
    * @param {NODE_RED_NODE} nodeRedNode - the node red instance
    */
   initialize(RED, config, nodeRedNode) {

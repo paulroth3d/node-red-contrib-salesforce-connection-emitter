@@ -47,16 +47,16 @@ class ConnectionEmitter extends EventEmitter {
 
   /**
    * Initializes the node instance.
-   * @param {RED} RED - The Node Red Server
-   * @param {RED_CONFIG} config - Configuration
-   * @param {NODE_RED_NODE} NodeRedNode - Current Node Red Node
+   * @param {NodeRed} RED - The Node Red Server
+   * @param {NodeRedConfig} config - Configuration
+   * @param {NodeRedNode} NodeRedNode - Current Node Red Node
    */
   initialize(RED, config, nodeRedNode){
-    /** @property {import('node-red')} RED - the Node Red server */
+    /** @property {NodeRed} RED - the Node Red server */
     this.RED = RED;
-    /** @property {RED_CONFIG} config - the configuration sent for initializing this node */
+    /** @property {NodeRedConfig} config - the configuration sent for initializing this node */
     this.config = config;
-    /** @property {NODE_RED_NODE} NodeRedNode - the node red node that is running in the flow */
+    /** @property {NodeRedNode} NodeRedNode - the node red node that is running in the flow */
     this.NodeRedNode = nodeRedNode;
 
     /** @property {import('jsforce').Connection} connection - the current JS Force connection */
@@ -192,7 +192,7 @@ class ConnectionEmitter extends EventEmitter {
 /**
  * Necessary function as node red uses the literal function for export
  * (with no support for AMD/ES6 modules)
- * @param {import('node-red')} RED - the node red server
+ * @param {NodeRed} RED - the node red server
  */
 function setupNodeRed(RED){
   RED.nodes.registerType('sf-connection-emitter', function(config){

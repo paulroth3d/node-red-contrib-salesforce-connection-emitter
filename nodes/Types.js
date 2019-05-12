@@ -2,73 +2,19 @@
 //-- @TODO: correct for the rest of them.
 
 /**
- * Collection of Node Red Nodes
- * @typedef RED_NODES
- * @property {(nodeId:String) => NODE_RED_NODE} getNode - Finds a Node Red Node by Id
+ * Node Red Server
+ * @typedef {import('node-red').Red} NodeRed
  */
 
 /**
- * Node Red Server
- * @typedef RED
- * @property {RED_NODES} nodes - Collection of Nodes
+ * Node Red Node
+ * @typedef {import('node-red').Node} NodeRedNode
  */
 
 /**
  * Configuration for a Node Red Node
- * @typedef RED_CONFIG
+ * @typedef NodeRedConfig
  * @property {string} name - the name of the node
- */
-
-/**
- * JS Force Connection
- * @typedef JsForceConnection
- */
-
-/**
- * Node Event Emitter
- * @typedef EventEmitter
- * @property {string} name - the name of the cuca
- * @property {() => Array<string | number>} eventNames -
- * @property {(n: number) => this} setMaxListeners -
- * @property {() => number} getMaxListeners -
- * @property {(type: string | number, ...args: any[]) => boolean} emit -
- * @property {(type: string | number, listener: Listener) => this} addListener -
- * @property {(type: string | number, listener: Listener) => this} on -
- * @property {(type: string | number, listener: Listener) => this} once -
- * @property {(type: string | number, listener: Listener) => this} prependListener -
- * @property {(type: string | number, listener: Listener) => this} prependOnceListener -
- * @property {(type: string | number, listener: Listener) => this} removeListener -
- * @property {(type: string | number, listener: Listener) => this} off -
- * @property {(type?: string | number) => this} removeAllListeners -
- * @property {(type: string | number) => Listener[]} listeners -
- * @property {(type: string | number) => number} listenerCount -
- * @property {(type: string | number) => Listener[]} rawListeners -
- */
-
-/**
- * Custom Emitter
- * @typedef _CustomEmitterType
- * @property {() => string} doSomething - does something
- * 
- * @typedef {EventEmitter & _CustomEmitterType} CustomEmitter
- */
-
-/**
- * A status object accepted by a NodeRedNode
- * @typedef NODE_RED_STATUS
- * @property {string} fill - The color to use (red|green|...)
- * @property {string} shape - (dot|ring|circle|square|...)
- * @property {string} text - The label shown next to the status
- */
-
-/**
- * A Node Red Node
- * @typedef _NODE_RED_NODE_TYPE
- * @property {(NODE_RED_STATUS) => void} status - Sets the status on the node
- * @property {(object) => boolean} send - Sends a message to the next node via wires.
- * @property {(string) => void} error - dispatch an error message
- * 
- * @typedef {EventEmitter & _NODE_RED_NODE_TYPE} NODE_RED_NODE
  */
 
 /**
@@ -77,13 +23,35 @@
  */
 
 /**
+ * Message sent from node red
+ * @typedef NodeRedMessage
+ */
+
+/**
  * Our custom node red nodes with es6 classes
  * @typedef _NodeRedClassNodeType
  * @property {object} info - The es6 class instance backing the node
  * @property {class} infoClass - The es6 class that has the logic for the node.
  * 
- * @typedef {_NodeRedClassNodeType & NODE_RED_NODE} NodeRedClassNode
+ * @typedef {_NodeRedClassNodeType & NodeRedNode} NodeRedClassNode
  **/
+
+/**
+ * Node Event Emitter
+ * @typedef {import('events').EventEmitter} EventEmitter
+ */
+
+//-- specific
+
+/**
+ * JS Force
+ * @typedef {import('jsforce')} JSForce
+ */
+
+/**
+ * JS Force Connection
+ * @typedef {import('jsforce').Connection} JSForceConnection
+ */
 
 //-- because of a limitation
 //-- that we cannot use AMD Modules
@@ -97,7 +65,7 @@
 /**
  * Represents a Node Red Connection Emitter
  * @typedef ConnectionEmitterType
- * @property {import('jsforce').Connection} connection - the connection to use
+ * @property {JSForceConnection} connection - the connection to use
  * 
  * @typedef {EventEmitter & ConnectionEmitterType} ConnectionEmitter
  */
@@ -108,15 +76,15 @@
  * @property {ConnectionEmitter} info - The connection emitter for this node red node
  * @property {class} infoClass - the es6 class for the connection emitter.
  * 
- * @typedef {NODE_RED_NODE & ConnectionEmitterNodeType} ConnectionEmitterNode
+ * @typedef {NodeRedNode & ConnectionEmitterNodeType} ConnectionEmitterNode
  */
 
 /**
  * Represents a Connection Receiver
  * @typedef ConnectionReceiverType
- * @property {RED} RED - the node red server
- * @property {RED_CONFIG} config - the config sent for the node
- * @property {NODE_RED_NODE} nodeRedNode - the current node red node this operates on.
+ * @property {NodeRed} RED - the node red server
+ * @property {NodeRedConfig} config - the config sent for the node
+ * @property {NodeRedNode} nodeRedNode - the current node red node this operates on.
  * @property {ConnectionEmitter} connectionEmitter -
  * @property {import('jsforce').Connection} connection - current connection
  * 
