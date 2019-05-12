@@ -15,6 +15,16 @@ We would instead like to ensure the following:
 
 # Nodes
 
+* [connection.SfConnectionEmitter](#connectionsfconnectionemitter)
+* [query.SfSoqlQuery](##querysfsoqlquery)
+* [platformEvents.SfPlatformEventSubscriber](#platformeventssfplatformeventsubscriber)
+* [platformEvents.SfPlatformEventPublisher](#platformeventssfplatformeventpublisher)
+* [query.SfUniversalQuery](#querysfuniversalquery)
+* [describe.SfUniversalDescribe](#describesfuniversaldescribe)
+* [http.SfUniversalHttp](#httpsfuniveersalhttp)
+
+---
+
 ## [connection.SfConnectionEmitter](nodes/connection/sf-connection-emitter.js)
 
 **Configuration Node** - used by most (if not all of the other Salesforce commands.
