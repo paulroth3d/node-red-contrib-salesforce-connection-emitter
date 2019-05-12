@@ -56,9 +56,9 @@ class GenerateLoopKeys {
         return;
       }
 
-      log(`arrayToIterate:${JSON.stringify(arrayToIterate)}`);
-      log(`msg:${JSON.stringify(msg)}`);
-      log(`config.arrayPath:${JSON.stringify(config.arrayPath)}`);
+      // log(`arrayToIterate:${JSON.stringify(arrayToIterate)}`);
+      // log(`msg:${JSON.stringify(msg)}`);
+      // log(`config.arrayPath:${JSON.stringify(config.arrayPath)}`);
 
       //-- ensure it is an array
       if (typeof arrayToIterate.forEach !== 'function'){
