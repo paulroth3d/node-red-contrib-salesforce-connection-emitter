@@ -138,8 +138,16 @@ describe('generate-loop-keys', () => {
       assert.equal(NODE_MOCK.send.called, true);
 
       const sendArgs = NODE_MOCK.send.lastCall.args[0];
-      log(`sendArgs`, JSON.stringify(sendArgs));
+      // log(`sendArgs`, JSON.stringify(sendArgs));
 
+      assert.notEqual(sendArgs.payload.objectUrls, null, 'because we put the target path to payload.objectUrls, we should get results there');
+
+      //-- the array path + valuePath
+      expect(sendArgs.payload.objectUrls).contains(MSG_MOCK.payload.results.sobjects[0].urls.sobject);
+      expect(sendArgs.payload.objectUrls).contains(MSG_MOCK.payload.results.sobjects[1].urls.sobject);
+      expect(sendArgs.payload.objectUrls).contains(MSG_MOCK.payload.results.sobjects[2].urls.sobject);
+      expect(sendArgs.payload.objectUrls).contains(MSG_MOCK.payload.results.sobjects[3].urls.sobject);
+      
       resolve();
     });
     return testPromise;
