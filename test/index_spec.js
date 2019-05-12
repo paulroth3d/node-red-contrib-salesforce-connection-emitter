@@ -48,7 +48,7 @@ describe('index', () => {
     expect(EmitterNodes.connection.SfConnectionEmitter).not.to.be.null;
     expect(EmitterNodes.connection.SfConnectionReceiver).not.to.be.null;
     expect(EmitterNodes.describe.SfUniversalDescribe).not.to.be.null;
-    expect(EmitterNodes.http.SfUnversalHttp).not.to.be.null;
+    expect(EmitterNodes.http.SfUniversalHttp).not.to.be.null;
     expect(EmitterNodes.platformEvents.SfPlatformEventPublisher).not.to.be.null;
     expect(EmitterNodes.platformEvents.SfPlatformEventSubscriber).not.to.be.null;
     expect(EmitterNodes.query.SfUniversalQuery).not.to.be.null;

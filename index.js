@@ -19,6 +19,6 @@ module.exports = {
     SfUniversalDescribe: require('./nodes/describe/sf-universal-describe').infoClass
   },
   http: {
-    SfUnversalHttp: require('./nodes/http/sf-universal-http').infoClass
+    SfUniversalHttp: require('./nodes/http/sf-universal-http').infoClass
   }
 };
