@@ -25,7 +25,9 @@ describe('generate-loop-keys', () => {
     NODE_MOCK = testUtils.createNodeRedNodeMock();
     CONFIG_MOCK = {
       name:'node',
-      arrayPath: 'payload.results.sobjects'
+      arrayPath: 'payload.results.sobjects',
+      valuePath: 'urls.sobject',
+      targetPath: 'payload.objectUrls'
     };
     MSG_MOCK = {
       "payload": {
@@ -76,9 +78,68 @@ describe('generate-loop-keys', () => {
     });
     return testPromise;
   });
-  it('can generate map', () => {
+  it('can find a key on an array of literals', () => {
+    const testPromise = new Promise((resolve, reject) => {
+      const keyPath = null;
+      const obj = 1;
+      const node = new GenerateLoopKeys();
+      node.initialize(RED_MOCK, CONFIG_MOCK, NODE_MOCK);
+
+      const resultKey = node.determineObjectKey(obj, keyPath);
+      const expectedKey = 1;
+      assert.equal(resultKey, expectedKey, 'sending null should use the literal sent');
+
+      resolve();
+    });
+    return testPromise;
+  });
+  it('can find a key on an object', () => {
+    const testPromise = new Promise((resolve, reject) => {
+      const keyPath = 'prop';
+      const obj = {prop: 'something'};
+      const node = new GenerateLoopKeys();
+      node.initialize(RED_MOCK, CONFIG_MOCK, NODE_MOCK);
+
+      const resultKey = node.determineObjectKey(obj, keyPath);
+      const expectedKey = 'something';
+      assert.equal(resultKey, expectedKey, 'key should be the same regardless of being on the base of the object');
+
+      resolve();
+    });
+    return testPromise;
+  });
+  it('can find a key deep in an object', () => {
+    const testPromise = new Promise((resolve, reject) => {
+      const keyPath = 'payload.prop';
+      const obj = { payload: {prop: 'something'}};
+      const node = new GenerateLoopKeys();
+      node.initialize(RED_MOCK, CONFIG_MOCK, NODE_MOCK);
+
+      const resultKey = node.determineObjectKey(obj, keyPath);
+      const expectedKey = 'something';
+      assert.equal(resultKey, expectedKey, 'key should be the same regardless of being on the base of the object');
+
+      resolve();
+    });
+    return testPromise;
+  });
+  it('can calculate keys off a list of objects', () => {
     const testPromise = new Promise((resolve, reject) => {
       
+      CONFIG_MOCK.arrayPath= 'payload.results.sobjects';
+      CONFIG_MOCK.valuePath= 'urls.sobject';
+      CONFIG_MOCK.targetPath= 'payload.objectUrls';
+      
+      const node = new GenerateLoopKeys();
+      node.initialize(RED_MOCK, CONFIG_MOCK, NODE_MOCK);
+
+      NODE_MOCK.emit('input', MSG_MOCK);
+
+      assert.equal(NODE_MOCK.send.called, true);
+
+      const sendArgs = NODE_MOCK.send.lastCall.args[0];
+      log(`sendArgs`, JSON.stringify(sendArgs));
+
       resolve();
     });
     return testPromise;

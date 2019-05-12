@@ -2,12 +2,16 @@
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name" />
+    </div>
+    <div class="form-row">
         <label for="node-input-arrayPath"><i class="fa fa-tag"></i> Msg Array Path</label>
         <input type="text" id="node-input-arrayPath" placeholder="" />
-        <label for="node-input-keyPath"><i class="fa fa-tag"></i> Key Path</label>
-        <input type="text" id="node-input-keyPath" placeholder="" />
+    </div>
+    <div class="form-row">
         <label for="node-input-valuePath"><i class="fa fa-tag"></i> Value Path</label>
         <input type="text" id="node-input-valuePath" placeholder="" />
+    </div>
+    <div class="form-row">
         <label for="node-input-targetPath"><i class="fa fa-tag"></i> Target Path</label>
         <input type="text" id="node-input-targetPath" placeholder="" />
     </div>
@@ -27,13 +31,6 @@
             </dt>
             <dd>
                 Path to the array we should iterate within.
-            </dd>
-            <dt>
-                Key Path<span class="property-type">string</span>
-            </dt>
-            <dd>
-                Path to the unique identifier within each element of the array <br />
-                (leave blank for this to be auto generated)
             </dd>
             <dt>
                 Value Path<span class="property-type">string</span>
@@ -57,9 +54,8 @@
         defaults: {
             name: { value: '' },
             arrayPath: { value: '', required:true },
-            keyPath: { value: '' },
-            valuePath: { value: '', required:true },
-            TargetPath: { value: '', required:true }
+            valuePath: { value: '' },
+            targetPath: { value: '', required:true }
         },
         inputs: 1,
         outputs: 1,
