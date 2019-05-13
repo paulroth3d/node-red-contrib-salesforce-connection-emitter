@@ -4,7 +4,7 @@
 const log = require('fancy-log'); // eslint-disable-line no-unused-vars
 
 //-- asserts for mocha tests / others are also available.
-const assert = require('assert');
+const {assert,expect} = require('chai');
 
 const ConnectionEmitter = require('../nodes/connection/sf-connection-emitter').infoClass;
 
@@ -13,6 +13,11 @@ const jsforce = require('jsforce');
 const sinon = require('sinon');
 
 const testUtils = require('./util/TestUtils');
+
+
+const LOGIN = 'login';
+const ERROR_ERRNO_OBJ = {"errno":"ENOTFOUND","code":"ENOTFOUND","syscall":"getaddrinfo","hostname":"test.salesforce.com","host":"test.salesforce.com","port":443};
+const ErrorHostNotFound = require('../nodes/connection/errorMatchers/connection-host-not-found')(LOGIN);
 
 let RED_MOCK; //-- to be reset each test, because each test may have different nodes
 
@@ -28,6 +33,9 @@ const CONFIG_MOCK = {
 };
 
 const NODE_MOCK = testUtils.createNodeRedNodeMock();
+
+//-- represents a connection that failed from logging in - like if we are offline
+const ERR_OFFLINE = {"errno":"ENOTFOUND","code":"ENOTFOUND","syscall":"getaddrinfo","hostname":"test.salesforce.com","host":"test.salesforce.com","port":443};
 
 /**
  * Ensure that the mocha tests run
@@ -94,6 +102,27 @@ describe('Connection-Emitter', () => {
     assert.equal(connectionEmitter.host, 'https://test.salesforce.com');
     assert.notEqual(connectionEmitter.connection, null);
 
+    done();
+  });
+});
+
+describe('ConnectionEmitter.ConnectionNotFoundGuidance', () => {
+  it('Detects ENOTFOUND from Login', (done) => {
+    const guidance = ErrorHostNotFound.matches(LOGIN, ERROR_ERRNO_OBJ);
+    expect(guidance).not.to.be.null;
+    let expectedMsg = 'Could not connect to login host';
+    expect(guidance.userFriendlyError).to.contain('Could not connect');
+    expect(guidance.developerError).to.contain('test.salesforce.com');
+    done();
+  });
+  it('Does not match other login errors', (done) => {
+    const userGuidance = ErrorHostNotFound.matches(LOGIN, {});
+    expect(userGuidance).to.be.null;
+    done();
+  });
+  it('Does not match other types of errors', (done) => {
+    const userGuidance = ErrorHostNotFound.matches('NoMatch', {});
+    expect(userGuidance).to.be.null;
     done();
   });
 });

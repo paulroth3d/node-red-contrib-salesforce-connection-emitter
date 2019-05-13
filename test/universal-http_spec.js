@@ -79,7 +79,7 @@ describe('sf-universal-http', () => {
 
       assert(NODE_MOCK.send.called,'send should be called');
       const sendVal = NODE_MOCK.send.lastCall.args[0];
-      log(sendVal);
+      // log(sendVal);
       assert.equal(sendVal.payload.call.url, EXAMPLE_URL);
       assert.equal(sendVal.payload.call.response.id, EXAMPLE_URL_RESPONSE.id);
       resolve();

@@ -8,9 +8,23 @@ require('../Types');
 
 const log = require('fancy-log');
 const EventEmitter = require('events').EventEmitter;
-const sinon = require('sinon');
 
 const jsforce = require('jsforce');
+
+//-- represents the user is currently in the login phase
+const SOURCE_LOGIN = 'connectionEmitter.login';
+
+/**
+ * Register the error matchers for the connection emitter.
+ * (Note that this adds values to the ErrorGuide singleton / side - effect)
+ */
+const {ErrorGuide} = require('../ErrorGuide');
+ErrorGuide.addMatcher(
+  require('./errorMatchers/connection-host-not-found')(SOURCE_LOGIN)
+);
+
+//-- used only for mocking if offline.
+const testUtils = require('../../test/util/TestUtils');
 
 const MAX_LISTENER_COUNT = 50;
 
@@ -141,19 +155,11 @@ class ConnectionEmitter extends EventEmitter {
       //-- support functional testing while offline.
       if (process.env.NODE_ENV === 'offline'){
         //-- mock without needing to login
+        log(`--sf-connection-emitter: offline mode detected---`)
         log(`refresh requested:${host}`);
         log(`username:${this.username}`);
         log(`password:${this.password}`);
-        this.connection = {
-          streaming : {
-            createClient: sinon.mock().returns({
-              subscribe: sinon.mock()
-            })
-          },
-          sobject: sinon.mock().returns({
-            create: sinon.mock()
-          })
-        };
+        this.connection = testUtils.createJsForceConnectionMock();
         this.emit('newConnection', this.connection);
         return;
       } else {
@@ -162,7 +168,11 @@ class ConnectionEmitter extends EventEmitter {
         });
         conn.login(this.username, this.password, (err, userInfo) => {
           if (err){
-            log.error('error occurred during login:', err);
+            log.error(`SfConnectionEmitter: Error occurred during login for host[${host}]:[${this.username}]`);
+            log.error( ErrorGuide.getGuidanceStr(SOURCE_LOGIN, err,
+              ErrorGuide.DEVELOPER,
+              `Please check the following error message:\n${JSON.stringify(err)}`
+            ));
             return;
           }
   
@@ -206,6 +216,11 @@ function setupNodeRed(RED){
       token: { type:'password' }
     }
   });
+}
+
+
+function addErrorMatchers(){
+
 }
 
 //-- because it seems we cannot export the class outright...
