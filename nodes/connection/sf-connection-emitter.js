@@ -158,7 +158,6 @@ class ConnectionEmitter extends EventEmitter {
         log(`--sf-connection-emitter: offline mode detected---`)
         log(`refresh requested:${host}`);
         log(`username:${this.username}`);
-        log(`password:${this.password}`);
         this.connection = testUtils.createJsForceConnectionMock();
         this.emit('newConnection', this.connection);
         return;
@@ -216,11 +215,6 @@ function setupNodeRed(RED){
       token: { type:'password' }
     }
   });
-}
-
-
-function addErrorMatchers(){
-
 }
 
 //-- because it seems we cannot export the class outright...
