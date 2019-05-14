@@ -37,16 +37,6 @@ const NODE_MOCK = testUtils.createNodeRedNodeMock();
 //-- represents a connection that failed from logging in - like if we are offline
 const ERR_OFFLINE = {"errno":"ENOTFOUND","code":"ENOTFOUND","syscall":"getaddrinfo","hostname":"test.salesforce.com","host":"test.salesforce.com","port":443};
 
-/**
- * Ensure that the mocha tests run
- */
-describe('connection-emmitter', () => {
-  it('should be running mocha tests', (done) => {
-    assert.equal(1+2,3,'Tests are running in mocha');
-    done();
-  });
-});
-
 describe('Connection-Emitter', () => {
 
   beforeEach( () => {
