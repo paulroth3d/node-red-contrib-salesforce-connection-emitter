@@ -8,9 +8,6 @@ const {
 
 const {assert, expect} = require('chai');
 
-const sinon = require('sinon');
-
-
 const KEY_WITHOUT_MATCH = 'notFound';
 const KEY_WITHOUT_MATCH_OBJ= {};
 
@@ -20,7 +17,7 @@ const LOGIN_USER_ERROR = 'login user error';
 const LOGIN_DEVELOPER_ERROR = 'login developer error';
 
 const LOGOUT = 'logout';
-const ERROR_LOGOUT_OBJ = {key:LOGOUT};
+// const ERROR_LOGOUT_OBJ = {key:LOGOUT};
 const LOGOUT_USER_ERROR = 'logout user error';
 const LOGOUT_DEVELOPER_ERROR = 'logout developer error';
 
@@ -138,6 +135,43 @@ describe('ErrorGuidance.ErrorMatcherAdvanced', () => {
     expect(guidance.userFriendlyError, LOGIN_DEVELOPER_ERROR);
     done();
   });
+});
+
+describe('ErrorGuide.ErrorMatcherAdvanced', () => {
+  beforeEach(done => {
+    advancedMatcher = new ErrorMatcherAdvanced(
+      LOGIN,
+      (key, errorObj) => {
+        if (key === LOGIN && errorObj && errorObj.key === LOGIN){
+          return new ErrorGuidance(LOGIN_USER_ERROR, LOGIN_DEVELOPER_ERROR);
+        }
+        return null;
+      }
+    )
+    done();
+  });
+  it('can match arguments via functions passed', done => {
+    guidance = advancedMatcher.matches(LOGIN, ERROR_LOGIN_OBJ);
+    expect(guidance).to.not.be.null;
+    expect(guidance.userFriendlyError).to.be.equal(LOGIN_USER_ERROR);
+    expect(guidance.developerError).to.be.equal(LOGIN_DEVELOPER_ERROR);
+    done();
+  });
+  it('does not throw errors if no function is passed', done => {
+    try {
+      advancedMatcher = new ErrorMatcherAdvanced(LOGIN, null);
+      guidance = advancedMatcher.matches(LOGIN, ERROR_LOGIN_OBJ);
+      //-- we don't care about the results - that isn't in the interface - only it shouldn't throw an exception
+    } catch(err){
+      assert.fail('Should not throw an exception if no function is passed for the advanced error matcher');
+    }
+    done();
+  });
+  it('should not match if the error does not match', done => {
+    guidance = advancedMatcher.matches(LOGOUT, ERROR_LOGIN_OBJ);
+    expect(guidance).to.be.null;
+    done();
+  })
 });
 
 describe('ErrorGuide.ErrorGuide', () => {

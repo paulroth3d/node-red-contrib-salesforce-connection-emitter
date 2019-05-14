@@ -16,7 +16,6 @@ We would instead like to ensure the following:
 # Nodes
 
 * [connection.SfConnectionEmitter](#connectionsfconnectionemitter)
-* [query.SfSoqlQuery](#querysfsoqlquery)
 * [platformEvents.SfPlatformEventSubscriber](#platformeventssfplatformeventsubscriber)
 * [platformEvents.SfPlatformEventPublisher](#platformeventssfplatformeventpublisher)
 * [query.SfUniversalQuery](#querysfuniversalquery)
@@ -107,50 +106,7 @@ Each configuration manages the connection to salesforce, and emits events to tho
 
 For nodes that subclass the [connection.SfConnectionReceiver](#connectionsfconnectionreceiver) - this is all handled for you... For more information, [please see that class](nodes/connection/sf-connection-receiver.js)
 
----
 
-## [query.SfSoqlQuery](nodes/query/sf-soql-query.js)
-
-Use this node to perform a SOQL query to capture information from Salesforce
-
-<table>
-	<thead>
-		<tr>
-			<th>Name</th>
-			<th>Type</th>
-			<th>Description</th>
-			<th>Example</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td>Name</td>
-			<td>String</td>
-			<td>Label to show in Node Red Editor</td>
-			<td>Query</td>
-		</tr>
-		<tr>
-			<td>Connection</td>
-			<td> connection.SfConnectionEmitter</td>
-			<td>The connection emitter configuration to use</td>
-			<td>sfconn</td>
-		</tr>
-		<tr>
-			<td>Query</td>
-			<td>msg property | global variable | string | environment variable </td>
-			<td>The query to execute. (msg property is recommended, as a template can easily help here)</td>
-			<td>msg.info.query</td>
-		</tr>
-		<tr>
-			<td>Target</td>
-			<td>msg property</td>
-			<td>The path on the msg to put the results</td>
-			<td>payload.results</td>
-		</tr>
-	</tbody>
-</table>
-
-![Screenshot of Soql Query](docs/images/SoqlQuery.jpg)
 
 ---
 

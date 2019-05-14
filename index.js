@@ -8,7 +8,6 @@ module.exports = {
     SfConnectionReceiver: require('./nodes/connection/sf-connection-receiver')
   },
   query: {
-    SfSoqlQuery: require('./nodes/query/sf-soql-query').infoClass,
     SfUniversalQuery: require('./nodes/query/sf-universal-query').infoClass
   },
   platformEvents: {

@@ -16,7 +16,6 @@
   "node-red": {
     "nodes": {
       "sf-connection-emitter": "nodes/connection/sf-connection-emitter.js",
-      "sf-soql-query": "nodes/query/sf-soql-query.js",
       "sf-platform-event-pub": "nodes/platformEvents/sf-platform-event-pub.js",
       "sf-platform-event-sub": "nodes/platformEvents/sf-platform-event-sub.js",
       "sf-universal-query": "nodes/query/sf-universal-query.js",

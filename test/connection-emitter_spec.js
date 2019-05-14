@@ -34,9 +34,6 @@ const CONFIG_MOCK = {
 
 const NODE_MOCK = testUtils.createNodeRedNodeMock();
 
-//-- represents a connection that failed from logging in - like if we are offline
-const ERR_OFFLINE = {"errno":"ENOTFOUND","code":"ENOTFOUND","syscall":"getaddrinfo","hostname":"test.salesforce.com","host":"test.salesforce.com","port":443};
-
 describe('Connection-Emitter', () => {
 
   beforeEach( () => {
@@ -100,7 +97,7 @@ describe('ConnectionEmitter.ConnectionNotFoundGuidance', () => {
   it('Detects ENOTFOUND from Login', (done) => {
     const guidance = ErrorHostNotFound.matches(LOGIN, ERROR_ERRNO_OBJ);
     expect(guidance).not.to.be.null;
-    let expectedMsg = 'Could not connect to login host';
+    // let expectedMsg = 'Could not connect to login host';
     expect(guidance.userFriendlyError).to.contain('Could not connect');
     expect(guidance.developerError).to.contain('test.salesforce.com');
     done();
