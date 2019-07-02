@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-salesforce-connection-emitter",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "A set of Node Red commands that allows nodes to better connect to salesforce (using environment variables, connection pools and config nodes)",
   "main": "index.js",
   "scripts": {
