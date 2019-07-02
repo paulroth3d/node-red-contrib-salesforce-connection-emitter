@@ -168,9 +168,13 @@ class ConnectionEmitter extends EventEmitter {
         conn.login(this.username, this.password, (err, userInfo) => {
           if (err){
             log.error(`SfConnectionEmitter: Error occurred during login for host[${host}]:[${this.username}]`);
+            let defaultErrorMessage = JSON.stringify(err, Object.getOwnPropertyNames(err));
+            if (err.hasOwnProperty('message')){
+              defaultErrorMessage = err.message;
+            }
             log.error( ErrorGuide.getGuidanceStr(SOURCE_LOGIN, err,
               ErrorGuide.DEVELOPER,
-              `Please check the following error message:\n${JSON.stringify(err)}`
+              `Please check the following error message:\n${defaultErrorMessage}`
             ));
             return;
           }
